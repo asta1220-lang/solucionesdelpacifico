@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soluciones del Pacífico | Desarrollo Web Profesional · Colima</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --deep: #0d1f3c;
+    --ocean: #0e3460;
+    --teal: #00b4d8;
+    --cyan: #48cae4;
+    --mint: #90e0ef;
+    --glow: #00f5ff;
+    --white: #e8f4f8;
+    --muted: #7ba7bc;
+    --card: rgba(14,52,96,0.45);
+    --border: rgba(0,180,216,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,180,216,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,245,255,0.05) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,180,216,0.02) 60px, rgba(0,180,216,0.02) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,180,216,0.02) 60px, rgba(0,180,216,0.02) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 6%;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .nav-logo img {
+    height: 44px;
+    width: 44px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(0,180,216,0.5));
+  }
+
+  .nav-logo span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .nav-logo small {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--teal);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--teal); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    color: var(--navy) !important;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.3s !important;
+    box-shadow: 0 0 20px rgba(0,180,216,0.3);
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(0,180,216,0.5) !important;
+    color: var(--navy) !important;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 6% 80px;
+    overflow: hidden;
+  }
+
+  .hero-waves {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    overflow: hidden;
+    opacity: 0.3;
+  }
+
+  .wave {
+    position: absolute;
+    bottom: 0;
+    width: 200%;
+    height: 120px;
+    background: linear-gradient(180deg, transparent, rgba(0,180,216,0.15));
+    border-radius: 50% 50% 0 0 / 80% 80% 0 0;
+    animation: waveAnim 8s ease-in-out infinite;
+  }
+
+  .wave:nth-child(2) {
+    animation-delay: -4s;
+    opacity: 0.5;
+    bottom: 10px;
+    background: linear-gradient(180deg, transparent, rgba(0,245,255,0.1));
+  }
+
+  @keyframes waveAnim {
+    0%, 100% { transform: translateX(-25%) scaleY(1); }
+    50% { transform: translateX(0%) scaleY(1.1); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,180,216,0.1);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 18px;
+    font-size: 0.8rem;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--glow);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--glow);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    animation: fadeUp 0.9s ease 0.1s both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--teal), var(--glow), var(--mint));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 1s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    color: var(--navy);
+    padding: 15px 34px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 0 30px rgba(0,180,216,0.35);
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px rgba(0,180,216,0.55);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 15px 34px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: rgba(0,180,216,0.05);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STATS */
+  .stats {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+  }
+
+  .stat {
+    background: rgba(10,22,40,0.9);
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--teal);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 6%;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--teal);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-title em {
+    font-style: normal;
+    color: var(--teal);
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 500px;
+    line-height: 1.7;
+  }
+
+  /* SERVICIOS */
+  #servicios { background: var(--navy); }
+
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .service-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0,180,216,0.4);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 30px rgba(0,180,216,0.1);
+  }
+
+  .service-card:hover::before { opacity: 1; }
+
+  .service-icon {
+    width: 56px; height: 56px;
+    background: rgba(0,180,216,0.1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 24px;
+    transition: all 0.3s;
+  }
+
+  .service-card:hover .service-icon {
+    background: rgba(0,180,216,0.2);
+    box-shadow: 0 0 20px rgba(0,180,216,0.2);
+  }
+
+  .service-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .service-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .service-tag {
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.15);
+    color: var(--mint);
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+  }
+
+  /* PROYECTOS */
+  #proyectos {
+    background: linear-gradient(180deg, var(--navy), var(--deep));
+  }
+
+  .projects-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35), 0 0 25px rgba(0,180,216,0.1);
+    border-color: rgba(0,180,216,0.35);
+  }
+
+  .project-thumb {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thumb-1 { background: linear-gradient(135deg, #0d2137, #0e3460); }
+  .thumb-2 { background: linear-gradient(135deg, #0a1e30, #0c3450); }
+  .thumb-3 { background: linear-gradient(135deg, #091928, #0b2d47); }
+  .thumb-4 { background: linear-gradient(135deg, #0d2340, #0f3a62); }
+
+  .project-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.4));
+  }
+
+  .project-body {
+    padding: 28px;
+  }
+
+  .project-type {
+    font-size: 0.72rem;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+
+  .project-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .project-body p {
+    color: var(--muted);
+    font-size: 0.87rem;
+    line-height: 1.65;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .project-link {
+    color: var(--teal);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover { gap: 10px; }
+
+  /* DASHBOARD DEMO */
+  #dashboard {
+    background: var(--deep);
+  }
+
+  .dash-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .dash-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .dash-preview {
+    background: rgba(10,22,40,0.8);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+
+  .dash-topbar {
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dash-dot:nth-child(1) { background: #ff5f57; }
+  .dash-dot:nth-child(2) { background: #febc2e; }
+  .dash-dot:nth-child(3) { background: #28c840; }
+
+  .dash-title {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-left: auto;
+    margin-right: auto;
+    letter-spacing: 0.05em;
+  }
+
+  .dash-body {
+    padding: 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .kpi {
+    background: rgba(0,180,216,0.06);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .kpi-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--teal);
+  }
+
+  .kpi-change {
+    font-size: 0.75rem;
+    color: #28c840;
+    margin-top: 4px;
+  }
+
+  .dash-chart {
+    grid-column: 1 / -1;
+    background: rgba(0,180,216,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--cyan), var(--teal));
+    border-radius: 4px 4px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    animation: growBar 1.2s ease both;
+    transform-origin: bottom;
+  }
+
+  .bar:hover { opacity: 1; }
+
+  @keyframes growBar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+
+  /* CHATBOT */
+  #chatbot {
+    background: var(--navy);
+  }
+
+  .chatbot-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .chat-demo {
+    background: rgba(10,22,40,0.8);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+
+  .chat-header {
+    background: rgba(0,180,216,0.1);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .chat-avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .chat-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .chat-status {
+    font-size: 0.75rem;
+    color: #28c840;
+  }
+
+  .chat-status::before {
+    content: '● ';
+    font-size: 0.6rem;
+  }
+
+  .chat-messages {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 260px;
+  }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    max-width: 85%;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-bubble {
+    background: rgba(0,180,216,0.12);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 4px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--white);
+  }
+
+  .msg.user .msg-bubble {
+    background: rgba(0,180,216,0.25);
+    border-color: rgba(0,180,216,0.35);
+    border-radius: 12px 12px 4px 12px;
+    color: var(--white);
+  }
+
+  .chat-input {
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .chat-input input {
+    flex: 1;
+    background: rgba(0,180,216,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-size: 0.85rem;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .chat-input input::placeholder { color: var(--muted); }
+  .chat-input input:focus { border-color: var(--teal); }
+
+  .chat-send {
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    border: none;
+    border-radius: 8px;
+    width: 40px; height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+    color: var(--navy);
+  }
+
+  .chat-send:hover { transform: scale(1.1); }
+
+  .chatbot-info h2 { margin-bottom: 20px; }
+  .chatbot-info p { color: var(--muted); line-height: 1.75; font-weight: 300; margin-bottom: 30px; }
+
+  .chat-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .chat-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .cf-icon {
+    width: 36px; height: 36px;
+    background: rgba(0,180,216,0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .cf-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 3px; }
+  .cf-desc { font-size: 0.82rem; color: var(--muted); font-weight: 300; }
+
+  /* IDEAS / CONTACTO */
+  #ideas {
+    background: linear-gradient(180deg, var(--deep), var(--navy));
+  }
+
+  .ideas-container {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ideas-container .section-title { margin-bottom: 16px; }
+  .ideas-container .section-sub { margin: 0 auto 48px; }
+
+  .ideas-form {
+    background: rgba(14,52,96,0.35);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    backdrop-filter: blur(20px);
+    text-align: left;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--mint);
+    letter-spacing: 0.03em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--white);
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    resize: vertical;
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: var(--muted); }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--teal);
+    background: rgba(0,180,216,0.04);
+  }
+
+  .form-group select option { background: var(--deep); }
+
+  .form-group textarea { min-height: 120px; }
+
+  .form-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    color: var(--navy);
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.03em;
+    transition: all 0.3s;
+    box-shadow: 0 0 30px rgba(0,180,216,0.3);
+    margin-top: 8px;
+  }
+
+  .form-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px rgba(0,180,216,0.5);
+  }
+
+  .form-note {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 16px;
+  }
+
+  .form-note a {
+    color: var(--teal);
+    text-decoration: none;
+  }
+
+  /* SUCCESS MESSAGE */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 32px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .success-msg .success-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+
+  .success-msg h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+
+  .success-msg p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    background: rgba(5,12,25,0.95);
+    border-top: 1px solid var(--border);
+    padding: 60px 6% 30px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand img {
+    height: 50px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 8px rgba(0,180,216,0.4));
+  }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 10px;
+  }
+
+  .social-btn {
+    width: 36px; height: 36px;
+    background: rgba(0,180,216,0.08);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .social-btn:hover {
+    background: rgba(0,180,216,0.15);
+    color: var(--teal);
+    border-color: var(--teal);
+  }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+  }
+
+  .footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-col ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 300;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul a:hover { color: var(--teal); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .footer-bottom a { color: var(--teal); text-decoration: none; }
+
+  /* FLOATING CHATBOT BTN */
+  .chat-fab {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 58px; height: 58px;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(0,180,216,0.5);
+    z-index: 200;
+    transition: all 0.3s;
+    border: none;
+    color: var(--navy);
+    animation: bounceFab 3s ease-in-out infinite;
+  }
+
+  @keyframes bounceFab {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .chat-fab:hover {
+    transform: scale(1.1) !important;
+    animation: none;
+    box-shadow: 0 0 50px rgba(0,180,216,0.7);
+  }
+
+  /* CHAT POPUP */
+  .chat-popup {
+    position: fixed;
+    bottom: 105px; right: 32px;
+    width: 340px;
+    background: rgba(10,22,40,0.97);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(30px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,180,216,0.1);
+    z-index: 199;
+    display: none;
+    flex-direction: column;
+    max-height: 480px;
+  }
+
+  .chat-popup.active { display: flex; animation: popUp 0.3s ease both; }
+
+  @keyframes popUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .popup-header {
+    background: rgba(0,180,216,0.12);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .popup-avatar {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .popup-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; }
+  .popup-online { font-size: 0.72rem; color: #28c840; }
+  .popup-online::before { content: '● '; font-size: 0.55rem; }
+
+  .popup-close {
+    margin-left: auto;
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+  }
+
+  .popup-close:hover { color: var(--white); }
+
+  .popup-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--teal) transparent;
+  }
+
+  .popup-msg { font-size: 0.83rem; }
+
+  .popup-input {
+    border-top: 1px solid var(--border);
+    padding: 12px 14px;
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .popup-input input {
+    flex: 1;
+    background: rgba(0,180,216,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--white);
+    font-size: 0.83rem;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .popup-input input:focus { border-color: var(--teal); }
+  .popup-input input::placeholder { color: var(--muted); }
+
+  .popup-btn {
+    background: var(--teal);
+    border: none;
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    color: var(--navy);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .popup-btn:hover { background: var(--cyan); transform: scale(1.05); }
+
+  /* TYPING INDICATOR */
+  .typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(0,180,216,0.1);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .typing span {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: typingDot 1.4s infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 14px 5%; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .chatbot-layout { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .ideas-form { padding: 28px 22px; }
+    .chat-popup { width: calc(100vw - 48px); right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="/mnt/user-data/uploads/1774286864448_2ef00e76-8d4b-42f9-ba7d-57c505ec0770-removebg-preview.png" alt="Logo">
+    <span>Soluciones del Pacífico<small>Desarrollo Web · Colima</small></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#chatbot">Chatbot</a></li>
+    <li><a href="#ideas" class="nav-cta">Mándanos tu Idea</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-badge">Desarrollo Web Profesional · Colima, México</span>
+  <h1>Transformamos tus ideas<br>en <em>soluciones digitales</em></h1>
+  <p>Páginas web profesionales, automatización de procesos, dashboards inteligentes y chatbots para hacer tu negocio más eficiente.</p>
+  <div class="hero-btns">
+    <a href="#ideas" class="btn-primary">🚀 Mándanos tu Idea</a>
+    <a href="#servicios" class="btn-secondary">Ver Servicios</a>
+  </div>
+  <div class="hero-waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><span class="stat-num" data-target="50">0</span><span class="stat-label">Proyectos Entregados</span></div>
+  <div class="stat"><span class="stat-num" data-target="100">0</span><span class="stat-label">% Satisfacción</span></div>
+  <div class="stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Años de Experiencia</span></div>
+  <div class="stat"><span class="stat-num" data-target="24">0</span><span class="stat-label">Horas de Soporte</span></div>
+</div>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="services-header">
+    <div>
+      <span class="section-tag">▸ Lo que hacemos</span>
+      <h2 class="section-title">Nuestros <em>Servicios</em></h2>
+      <p class="section-sub">Soluciones tecnológicas a medida para impulsar tu negocio al siguiente nivel.</p>
+    </div>
+    <a href="#ideas" class="btn-primary">Solicitar Cotización →</a>
+  </div>
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <h3>Páginas Web Profesionales</h3>
+      <p>Diseñamos y desarrollamos sitios web modernos, rápidos y optimizados para SEO que convierten visitantes en clientes.</p>
+      <div class="service-tags">
+        <span class="service-tag">Landing Pages</span>
+        <span class="service-tag">E-commerce</span>
+        <span class="service-tag">Corporativos</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🤖</div>
+      <h3>Chatbots Inteligentes</h3>
+      <p>Automatiza la atención al cliente 24/7 con chatbots con IA que responden preguntas, califican leads y hacen ventas.</p>
+      <div class="service-tags">
+        <span class="service-tag">WhatsApp</span>
+        <span class="service-tag">Web</span>
+        <span class="service-tag">IA Avanzada</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <h3>Dashboards & Analytics</h3>
+      <p>Visualiza el rendimiento de tu negocio en tiempo real. Paneles de control personalizados con tus métricas clave.</p>
+      <div class="service-tags">
+        <span class="service-tag">KPIs</span>
+        <span class="service-tag">Reportes</span>
+        <span class="service-tag">Tiempo Real</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">⚙️</div>
+      <h3>Automatización de Procesos</h3>
+      <p>Elimina tareas repetitivas y errores humanos. Automatizamos flujos de trabajo para que tu equipo se enfoque en lo importante.</p>
+      <div class="service-tags">
+        <span class="service-tag">Integraciones</span>
+        <span class="service-tag">APIs</span>
+        <span class="service-tag">CRM</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">📱</div>
+      <h3>Aplicaciones Web & Móvil</h3>
+      <p>Desarrollamos aplicaciones escalables y modernas con las últimas tecnologías para iOS, Android y Web.</p>
+      <div class="service-tags">
+        <span class="service-tag">React</span>
+        <span class="service-tag">Node.js</span>
+        <span class="service-tag">PWA</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🔒</div>
+      <h3>Mantenimiento & Soporte</h3>
+      <p>Soporte técnico continuo, actualizaciones de seguridad y optimización de rendimiento para mantener tu sitio siempre en línea.</p>
+      <div class="service-tags">
+        <span class="service-tag">24/7</span>
+        <span class="service-tag">Seguridad</span>
+        <span class="service-tag">Backups</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section id="proyectos">
+  <div class="projects-header">
+    <span class="section-tag">▸ Portafolio</span>
+    <h2 class="section-title">Nuestros <em>Proyectos</em></h2>
+    <p class="section-sub" style="margin:0 auto;">Casos de éxito que demuestran nuestra experiencia y compromiso con cada cliente.</p>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-thumb thumb-1">🛒</div>
+      <div class="project-body">
+        <div class="project-type">E-commerce · Colima</div>
+        <h3>Tienda en Línea TropicalMex</h3>
+        <p>Plataforma de venta online con catálogo dinámico, carrito de compras, pagos en línea y panel de administración.</p>
+        <a href="#ideas" class="project-link">¿Quieres algo similar? →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-thumb thumb-2">📊</div>
+      <div class="project-body">
+        <div class="project-type">Dashboard · Empresa Local</div>
+        <h3>Panel de Control de Ventas</h3>
+        <p>Dashboard en tiempo real con métricas de ventas, inventario, gráficas interactivas y reportes automáticos por email.</p>
+        <a href="#ideas" class="project-link">¿Quieres algo similar? →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-thumb thumb-3">🤖</div>
+      <div class="project-body">
+        <div class="project-type">Chatbot · Clínica Dental</div>
+        <h3>Asistente Virtual para Citas</h3>
+        <p>Chatbot en WhatsApp que agenda citas, responde dudas frecuentes y envía recordatorios automáticos a pacientes.</p>
+        <a href="#ideas" class="project-link">¿Quieres algo similar? →</a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-thumb thumb-4">⚙️</div>
+      <div class="project-body">
+        <div class="project-type">Automatización · Constructora</div>
+        <h3>Sistema de Gestión de Obras</h3>
+        <p>Plataforma para seguimiento de proyectos, control de materiales, asignación de personal y reportes de avance.</p>
+        <a href="#ideas" class="project-link">¿Quieres algo similar? →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DASHBOARD DEMO -->
+<section id="dashboard">
+  <div class="dash-container">
+    <div class="dash-header">
+      <span class="section-tag">▸ Ejemplo de Dashboard</span>
+      <h2 class="section-title">Controla tu negocio<br><em>en tiempo real</em></h2>
+      <p class="section-sub" style="margin:0 auto 40px;">Dashboards personalizados con las métricas que importan para tu empresa.</p>
+    </div>
+    <div class="dash-preview">
+      <div class="dash-topbar">
+        <div class="dash-dot"></div>
+        <div class="dash-dot"></div>
+        <div class="dash-dot"></div>
+        <span class="dash-title">Panel de Control — Soluciones del Pacífico</span>
+      </div>
+      <div class="dash-body">
+        <div class="kpi">
+          <div class="kpi-label">Ventas del Mes</div>
+          <div class="kpi-value">$84K</div>
+          <div class="kpi-change">↑ +18% vs mes anterior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Clientes Activos</div>
+          <div class="kpi-value">247</div>
+          <div class="kpi-change">↑ +12 nuevos</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Proyectos en Curso</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-change">↑ 3 finalizando pronto</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Conversión</div>
+          <div class="kpi-value">68%</div>
+          <div class="kpi-change">↑ +5% este mes</div>
+        </div>
+        <div class="dash-chart" id="chart-container">
+          <!-- Bars generated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHATBOT DEMO -->
+<section id="chatbot">
+  <div class="chatbot-layout">
+    <div class="chat-demo">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-name">Asistente Virtual</div>
+          <div class="chat-status">En línea ahora</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="demo-messages">
+        <div class="msg" style="animation-delay:0.2s">
+          <div class="msg-bubble">¡Hola! Soy el asistente de Soluciones del Pacífico. ¿En qué puedo ayudarte hoy? 👋</div>
+        </div>
+        <div class="msg user" style="animation-delay:0.6s">
+          <div class="msg-bubble">Quiero saber los precios de una página web</div>
+        </div>
+        <div class="msg" style="animation-delay:1s">
+          <div class="msg-bubble">¡Perfecto! Tenemos planes desde $5,000 MXN para una landing page hasta soluciones completas. ¿Me platicas más sobre tu negocio?</div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Escribe tu mensaje..." id="demo-input">
+        <button class="chat-send" onclick="sendDemoMsg()">➤</button>
+      </div>
+    </div>
+
+    <div class="chatbot-info">
+      <span class="section-tag">▸ Chatbots con IA</span>
+      <h2 class="section-title">Atiende a tus clientes<br><em>las 24 horas</em></h2>
+      <p>Implementamos chatbots inteligentes que responden preguntas, agendan citas, califican prospectos y hacen seguimiento automático. Todo sin que tengas que hacer nada.</p>
+      <div class="chat-features">
+        <div class="chat-feature">
+          <div class="cf-icon">💬</div>
+          <div>
+            <div class="cf-title">WhatsApp & Web</div>
+            <div class="cf-desc">Disponible en todos los canales donde están tus clientes</div>
+          </div>
+        </div>
+        <div class="chat-feature">
+          <div class="cf-icon">🧠</div>
+          <div>
+            <div class="cf-title">Inteligencia Artificial</div>
+            <div class="cf-desc">Respuestas naturales y contextuales con tecnología de última generación</div>
+          </div>
+        </div>
+        <div class="chat-feature">
+          <div class="cf-icon">📅</div>
+          <div>
+            <div class="cf-title">Agenda Automática</div>
+            <div class="cf-desc">Sincronización con tu calendario para agendar sin esfuerzo</div>
+          </div>
+        </div>
+        <div class="chat-feature">
+          <div class="cf-icon">📈</div>
+          <div>
+            <div class="cf-title">Reportes de Conversaciones</div>
+            <div class="cf-desc">Analítica completa de interacciones y leads generados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEAS / CONTACTO -->
+<section id="ideas">
+  <div class="ideas-container">
+    <span class="section-tag">▸ Trabajemos Juntos</span>
+    <h2 class="section-title">Mándanos tus <em>ideas</em></h2>
+    <p class="section-sub">Cuéntanos qué necesitas y lo convertimos en realidad. Hacemos tu trabajo más fácil con la tecnología correcta.</p>
+
+    <div class="ideas-form" id="contact-form-wrapper">
+      <form id="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tu Nombre *</label>
+            <input type="text" placeholder="Ej: Juan García" required id="f-name">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp / Teléfono *</label>
+            <input type="tel" placeholder="312 123 4567" required id="f-phone">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico *</label>
+          <input type="email" placeholder="tuemail@ejemplo.com" required id="f-email">
+        </div>
+        <div class="form-group">
+          <label>Tu Empresa o Negocio</label>
+          <input type="text" placeholder="Nombre de tu empresa" id="f-company">
+        </div>
+        <div class="form-group">
+          <label>¿Qué tipo de proyecto necesitas?</label>
+          <select id="f-type">
+            <option value="">— Selecciona una opción —</option>
+            <option>Página web profesional</option>
+            <option>Chatbot con IA</option>
+            <option>Dashboard / Panel de control</option>
+            <option>Automatización de procesos</option>
+            <option>Aplicación móvil</option>
+            <option>Otro (lo describo abajo)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cuéntanos tu Idea 💡 *</label>
+          <textarea placeholder="Describe tu proyecto o proceso que quieres automatizar. Mientras más detalle, mejor cotización podemos darte..." required id="f-idea"></textarea>
+        </div>
+        <button type="submit" class="form-submit">✈️ Enviar mi Idea</button>
+        <p class="form-note">Tu información es confidencial · Respuesta en menos de 24 hrs · <a href="mailto:solucionesdelpacifico1220@gmail.com">solucionesdelpacifico1220@gmail.com</a></p>
+      </form>
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">🎉</div>
+        <h3>¡Mensaje Enviado!</h3>
+        <p>Gracias por contactarnos. Revisaremos tu idea y te contactaremos en menos de 24 horas para darle vida a tu proyecto.</p>
+        <br>
+        <p style="color:var(--teal); font-size:0.85rem;">📧 solucionesdelpacifico1220@gmail.com</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="/mnt/user-data/uploads/1774286864448_2ef00e76-8d4b-42f9-ba7d-57c505ec0770-removebg-preview.png" alt="Logo">
+      <p>Somos una empresa de Colima especializada en desarrollo web, automatización y soluciones digitales para hacer tu negocio más eficiente y competitivo.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn">💼</a>
+        <a href="#" class="social-btn">📘</a>
+        <a href="#" class="social-btn">📸</a>
+        <a href="https://wa.me/52XXXXXXXXXX" class="social-btn">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#servicios">Páginas Web</a></li>
+        <li><a href="#chatbot">Chatbots con IA</a></li>
+        <li><a href="#dashboard">Dashboards</a></li>
+        <li><a href="#servicios">Automatización</a></li>
+        <li><a href="#servicios">Apps Móviles</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:solucionesdelpacifico1220@gmail.com">✉️ Email</a></li>
+        <li><a href="#ideas">💡 Manda tu Idea</a></li>
+        <li><a href="#proyectos">🗂 Proyectos</a></li>
+        <li><a href="#">📍 Colima, México</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Soluciones del Pacífico · Todos los derechos reservados</p>
+    <p>Hecho con 💙 en <a href="#">Colima, México</a></p>
+  </div>
+</footer>
+
+<!-- FLOATING CHATBOT -->
+<button class="chat-fab" onclick="toggleChat()" title="Chatear con nosotros">💬</button>
+
+<div class="chat-popup" id="chat-popup">
+  <div class="popup-header">
+    <div class="popup-avatar">🤖</div>
+    <div>
+      <div class="popup-title">Soporte Soluciones del Pacífico</div>
+      <div class="popup-online">En línea</div>
+    </div>
+    <button class="popup-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="popup-msgs" id="popup-msgs">
+    <div class="msg popup-msg">
+      <div class="msg-bubble">¡Hola! 👋 ¿Tienes alguna duda sobre nuestros servicios? Con gusto te ayudo.</div>
+    </div>
+  </div>
+  <div class="popup-input">
+    <input type="text" placeholder="Escribe aquí..." id="popup-input" onkeydown="if(event.key==='Enter') sendPopupMsg()">
+    <button class="popup-btn" onclick="sendPopupMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+  // COUNTER ANIMATION
+  function animateCounters() {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current) + (el.closest('.stat').querySelector('.stat-label').textContent.includes('%') ? '%' : '+');
+      }, 30);
+    });
+  }
+
+  // CHART BARS
+  function buildChart() {
+    const container = document.getElementById('chart-container');
+    if (!container) return;
+    const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const vals = [45,52,48,70,65,80,72,85,78,90,84,95];
+    container.innerHTML = '';
+    months.forEach((m, i) => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%';
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.cssText = `height:${vals[i]}%;animation-delay:${i*0.05}s`;
+      const label = document.createElement('span');
+      label.style.cssText = 'font-size:0.6rem;color:var(--muted);flex-shrink:0';
+      label.textContent = m;
+      wrap.appendChild(bar);
+      wrap.appendChild(label);
+      container.appendChild(wrap);
+    });
+  }
+
+  // INTERSECTION OBSERVER
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        if (e.target.classList.contains('stats')) animateCounters();
+        if (e.target.id === 'dashboard') buildChart();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelector('.stats') && observer.observe(document.querySelector('.stats'));
+  document.getElementById('dashboard') && observer.observe(document.getElementById('dashboard'));
+
+  // DEMO CHAT
+  const demoResponses = [
+    "¡Claro! Te podemos hacer una cotización personalizada sin costo. 😊",
+    "Trabajamos con tecnologías modernas: React, Node.js, Next.js y más.",
+    "El tiempo de entrega varía según el proyecto, pero típicamente de 2-6 semanas.",
+    "¡Por supuesto! Primero escuchamos tus necesidades y luego proponemos la mejor solución.",
+    "Contamos con planes de mantenimiento mensual para mantener tu sitio actualizado.",
+  ];
+  let demoIdx = 0;
+
+  function sendDemoMsg() {
+    const input = document.getElementById('demo-input');
+    if (!input.value.trim()) return;
+    const msgs = document.getElementById('demo-messages');
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.innerHTML = `<div class="msg-bubble">${input.value}</div>`;
+    msgs.appendChild(userMsg);
+
+    const typing = document.createElement('div');
+    typing.className = 'msg';
+    typing.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+
+    setTimeout(() => {
+      typing.remove();
+      const botMsg = document.createElement('div');
+      botMsg.className = 'msg';
+      botMsg.innerHTML = `<div class="msg-bubble">${demoResponses[demoIdx % demoResponses.length]}</div>`;
+      demoIdx++;
+      msgs.appendChild(botMsg);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1200);
+  }
+
+  document.getElementById('demo-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendDemoMsg();
+  });
+
+  // POPUP CHAT
+  let chatOpen = false;
+  const popupReplies = [
+    "¡Gracias por escribir! 😊 Un asesor te contactará pronto.",
+    "Podemos ayudarte con páginas web, chatbots, dashboards y más.",
+    "Para una cotización rápida, escríbenos a solucionesdelpacifico1220@gmail.com",
+    "¡Nos encanta escuchar nuevas ideas! Cuéntanos más sobre tu proyecto.",
+  ];
+  let popupIdx = 0;
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    const popup = document.getElementById('chat-popup');
+    if (chatOpen) popup.classList.add('active');
+    else popup.classList.remove('active');
+  }
+
+  function sendPopupMsg() {
+    const input = document.getElementById('popup-input');
+    if (!input.value.trim()) return;
+    const msgs = document.getElementById('popup-msgs');
+
+    const uMsg = document.createElement('div');
+    uMsg.className = 'msg user popup-msg';
+    uMsg.innerHTML = `<div class="msg-bubble">${input.value}</div>`;
+    msgs.appendChild(uMsg);
+
+    const typing = document.createElement('div');
+    typing.className = 'msg popup-msg';
+    typing.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+
+    setTimeout(() => {
+      typing.remove();
+      const bMsg = document.createElement('div');
+      bMsg.className = 'msg popup-msg';
+      bMsg.innerHTML = `<div class="msg-bubble">${popupReplies[popupIdx % popupReplies.length]}</div>`;
+      popupIdx++;
+      msgs.appendChild(bMsg);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1000);
+  }
+
+  // FORM SUBMIT
+  document.getElementById('contact-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.form-submit');
+    btn.textContent = '⏳ Enviando...';
+    btn.disabled = true;
+
+    const name = document.getElementById('f-name').value;
+    const phone = document.getElementById('f-phone').value;
+    const email = document.getElementById('f-email').value;
+    const company = document.getElementById('f-company').value;
+    const type = document.getElementById('f-type').value;
+    const idea = document.getElementById('f-idea').value;
+
+    // Build mailto link as fallback
+    const subject = encodeURIComponent(`Nueva Idea de Proyecto - ${name}`);
+    const body = encodeURIComponent(
+      `Nombre: ${name}\nTeléfono: ${phone}\nEmail: ${email}\nEmpresa: ${company}\nTipo: ${type}\n\nIdea/Proyecto:\n${idea}`
+    );
+    const mailtoLink = `mailto:solucionesdelpacifico1220@gmail.com?subject=${subject}&body=${body}`;
+
+    // Simulate sending
+    await new Promise(r => setTimeout(r, 1500));
+
+    // Show success
+    document.getElementById('contact-form').style.display = 'none';
+    const successEl = document.getElementById('success-msg');
+    successEl.style.display = 'block';
+
+    // Open mail client
+    window.location.href = mailtoLink;
+  });
+</script>
+</body>
+</html>
