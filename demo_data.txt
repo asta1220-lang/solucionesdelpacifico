@@ -1,0 +1,202 @@
+================================================================================
+        GRUPO ISCE – DEMO SIN CONEXIONES A BASES DE DATOS
+        Archivo de datos de prueba para versión DEMO
+================================================================================
+
+TÍTULO DEL SISTEMA: "DEMO – Consulta de Referencias (Sin Conexión)"
+AVISO: Todos los datos son ficticios y solo para fines de demostración.
+
+================================================================================
+  SECCIÓN 1: USUARIO DE PRUEBA
+================================================================================
+
+  Usuario   : demo
+  Contraseña: demo1234
+  Nombre    : Usuario Demo ISCE
+  Es Admin  : SÍ (puede ver todas las referencias)
+  Activo    : SÍ
+  ID Cliente: 1
+
+================================================================================
+  SECCIÓN 2: CLIENTE DE PRUEBA
+================================================================================
+
+  ID Cliente   : 1
+  Nombre       : Importaciones del Pacífico S.A. de C.V.
+
+================================================================================
+  SECCIÓN 3: REFERENCIAS (5 referencias de prueba)
+================================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+REFERENCIA #1
+─────────────────────────────────────────────────────────────────────────────
+  NumeroDeReferencia : PRUEBA-001
+  FechaApertura      : 2024-11-05
+  id_referencias     : 1001
+  id_cliente         : 1
+  nombre_cliente     : Importaciones del Pacífico S.A. de C.V.
+  Tipo de operación  : IMPORTACIÓN
+
+  Último evento registrado:
+    Tipo        : IMPORTACIÓN
+    Descripción : Pedimento pagado y liberado en aduana
+    Fecha/Hora  : 2024-11-18 14:32:00
+
+  Fechas por evento (menú):
+    Opción 1 – Fecha de Arriba (ETA)           [IdEvento=3]  : 2024-11-08 09:00:00
+    Opción 2 – Llegada de la mercancía          [IdEvento=6]  : 2024-11-10 11:45:00
+    Opción 3 – Revalidación                     [IdEvento=10] : 2024-11-12 16:20:00
+    Opción 4 – Fecha de Previo                  [IdEvento=15] : 2024-11-13 10:10:00
+    Opción 5 – Pedimento Pagado                 [IdEvento=29] : 2024-11-15 13:55:00
+    Opción 6 – Despacho                         [IdEvento=32] : 2024-11-16 08:30:00
+    Opción 7 – Entrega de factura a cliente     [IdEvento=49] : 2024-11-18 17:00:00
+
+  Documentos (Expediente aduanal CASAWIN):
+    Doc #1  | Nombre: Pedimento_PRUEBA001.pdf         | Extensión: PDF  | Tamaño: 245 KB
+    Doc #2  | Nombre: Factura_Proveedor_001.pdf      | Extensión: PDF  | Tamaño: 180 KB
+    Doc #3  | Nombre: ListaEmpaque_001.xlsx           | Extensión: XLSX | Tamaño: 98 KB
+    Doc #4  | Nombre: BL_Revalidado_001.pdf           | Extensión: PDF  | Tamaño: 320 KB
+
+─────────────────────────────────────────────────────────────────────────────
+REFERENCIA #2
+─────────────────────────────────────────────────────────────────────────────
+  NumeroDeReferencia : PRUEBA-002
+  FechaApertura      : 2024-11-20
+  id_referencias     : 1002
+  id_cliente         : 1
+  nombre_cliente     : Importaciones del Pacífico S.A. de C.V.
+  Tipo de operación  : IMPORTACIÓN
+
+  Último evento registrado:
+    Tipo        : IMPORTACIÓN
+    Descripción : Mercancía en proceso de previo físico
+    Fecha/Hora  : 2024-11-25 09:15:00
+
+  Fechas por evento (menú):
+    Opción 1 – Fecha de Arriba (ETA)           [IdEvento=3]  : 2024-11-22 07:30:00
+    Opción 2 – Llegada de la mercancía          [IdEvento=6]  : 2024-11-23 14:00:00
+    Opción 3 – Revalidación                     [IdEvento=10] : Pendiente
+    Opción 4 – Fecha de Previo                  [IdEvento=15] : 2024-11-25 09:15:00
+    Opción 5 – Pedimento Pagado                 [IdEvento=29] : Pendiente
+    Opción 6 – Despacho                         [IdEvento=32] : Pendiente
+    Opción 7 – Entrega de factura a cliente     [IdEvento=49] : Pendiente
+
+  Documentos (Expediente aduanal CASAWIN):
+    Doc #5  | Nombre: Pedimento_PRUEBA002_borrador.pdf | Extensión: PDF  | Tamaño: 210 KB
+    Doc #6  | Nombre: Factura_Proveedor_002.pdf          | Extensión: PDF  | Tamaño: 155 KB
+    Doc #7  | Nombre: CertificadoOrigen_002.pdf          | Extensión: PDF  | Tamaño: 88 KB
+
+─────────────────────────────────────────────────────────────────────────────
+REFERENCIA #3
+─────────────────────────────────────────────────────────────────────────────
+  NumeroDeReferencia : PRUEBA-003
+  FechaApertura      : 2024-10-01
+  id_referencias     : 1003
+  id_cliente         : 1
+  nombre_cliente     : Importaciones del Pacífico S.A. de C.V.
+  Tipo de operación  : EXPORTACIÓN
+
+  Último evento registrado:
+    Tipo        : EXPORTACIÓN
+    Descripción : Mercancía despachada y entregada al cliente
+    Fecha/Hora  : 2024-10-22 16:45:00
+
+  Fechas por evento (menú):
+    Opción 1 – Fecha de Arriba (ETA)           [IdEvento=3]  : 2024-10-05 10:00:00
+    Opción 2 – Llegada de la mercancía          [IdEvento=6]  : 2024-10-07 08:20:00
+    Opción 3 – Revalidación                     [IdEvento=10] : 2024-10-09 15:00:00
+    Opción 4 – Fecha de Previo                  [IdEvento=15] : 2024-10-11 11:30:00
+    Opción 5 – Pedimento Pagado                 [IdEvento=29] : 2024-10-15 09:45:00
+    Opción 6 – Despacho                         [IdEvento=32] : 2024-10-18 07:00:00
+    Opción 7 – Entrega de factura a cliente     [IdEvento=49] : 2024-10-22 16:45:00
+
+  Documentos (Expediente aduanal CASAWIN):
+    Doc #8  | Nombre: Pedimento_EXP_PRUEBA003.pdf     | Extensión: PDF  | Tamaño: 278 KB
+    Doc #9  | Nombre: Factura_Exportacion_003.pdf      | Extensión: PDF  | Tamaño: 200 KB
+    Doc #10 | Nombre: ListaEmpaque_EXP_003.xlsx        | Extensión: XLSX | Tamaño: 74 KB
+    Doc #11 | Nombre: ManifestacionValor_003.pdf       | Extensión: PDF  | Tamaño: 130 KB
+    Doc #12 | Nombre: PermisoSEMARNAT_003.pdf          | Extensión: PDF  | Tamaño: 95 KB
+
+─────────────────────────────────────────────────────────────────────────────
+REFERENCIA #4
+─────────────────────────────────────────────────────────────────────────────
+  NumeroDeReferencia : PRUEBA-004
+  FechaApertura      : 2024-12-01
+  id_referencias     : 1004
+  id_cliente         : 1
+  nombre_cliente     : Importaciones del Pacífico S.A. de C.V.
+  Tipo de operación  : IMPORTACIÓN
+
+  Último evento registrado:
+    Tipo        : IMPORTACIÓN
+    Descripción : ETA confirmada, en espera de arribo del buque
+    Fecha/Hora  : 2024-12-02 10:00:00
+
+  Fechas por evento (menú):
+    Opción 1 – Fecha de Arriba (ETA)           [IdEvento=3]  : 2024-12-05 06:00:00
+    Opción 2 – Llegada de la mercancía          [IdEvento=6]  : Pendiente
+    Opción 3 – Revalidación                     [IdEvento=10] : Pendiente
+    Opción 4 – Fecha de Previo                  [IdEvento=15] : Pendiente
+    Opción 5 – Pedimento Pagado                 [IdEvento=29] : Pendiente
+    Opción 6 – Despacho                         [IdEvento=32] : Pendiente
+    Opción 7 – Entrega de factura a cliente     [IdEvento=49] : Pendiente
+
+  Documentos (Expediente aduanal CASAWIN):
+    Doc #13 | Nombre: BL_Original_PRUEBA004.pdf        | Extensión: PDF  | Tamaño: 340 KB
+    Doc #14 | Nombre: Proforma_PRUEBA004.pdf            | Extensión: PDF  | Tamaño: 112 KB
+
+─────────────────────────────────────────────────────────────────────────────
+REFERENCIA #5
+─────────────────────────────────────────────────────────────────────────────
+  NumeroDeReferencia : PRUEBA-005
+  FechaApertura      : 2024-09-10
+  id_referencias     : 1005
+  id_cliente         : 1
+  nombre_cliente     : Importaciones del Pacífico S.A. de C.V.
+  Tipo de operación  : IMPORTACIÓN
+
+  Último evento registrado:
+    Tipo        : IMPORTACIÓN
+    Descripción : Factura entregada al cliente, expediente cerrado
+    Fecha/Hora  : 2024-09-30 12:00:00
+
+  Fechas por evento (menú):
+    Opción 1 – Fecha de Arriba (ETA)           [IdEvento=3]  : 2024-09-12 07:15:00
+    Opción 2 – Llegada de la mercancía          [IdEvento=6]  : 2024-09-14 10:30:00
+    Opción 3 – Revalidación                     [IdEvento=10] : 2024-09-16 14:00:00
+    Opción 4 – Fecha de Previo                  [IdEvento=15] : 2024-09-18 09:00:00
+    Opción 5 – Pedimento Pagado                 [IdEvento=29] : 2024-09-22 11:20:00
+    Opción 6 – Despacho                         [IdEvento=32] : 2024-09-25 08:45:00
+    Opción 7 – Entrega de factura a cliente     [IdEvento=49] : 2024-09-30 12:00:00
+
+  Documentos (Expediente aduanal CASAWIN):
+    Doc #15 | Nombre: Pedimento_PRUEBA005_final.pdf    | Extensión: PDF  | Tamaño: 260 KB
+    Doc #16 | Nombre: Factura_005.pdf                  | Extensión: PDF  | Tamaño: 175 KB
+    Doc #17 | Nombre: CertAnalisis_005.pdf             | Extensión: PDF  | Tamaño: 90 KB
+    Doc #18 | Nombre: ReportePrevio_005.pdf            | Extensión: PDF  | Tamaño: 145 KB
+    Doc #19 | Nombre: DODA_005.xml                     | Extensión: XML  | Tamaño: 22 KB
+    Doc #20 | Nombre: Fotos_Inspeccion_005.zip         | Extensión: ZIP  | Tamaño: 4.2 MB
+
+================================================================================
+  SECCIÓN 4: NOTAS PARA IMPLEMENTACIÓN DEMO
+================================================================================
+
+  1. NO conectar a MySQL ni a SQL Server.
+  2. NO llamar a la API SatoLink.
+  3. Todo el flujo de autenticación, referencias y documentos
+     debe leer los datos directamente de este archivo (o de un
+     array PHP equivalente hardcodeado).
+  4. Los botones "⬇️ Descargar" en la vista de documentos pueden
+     mostrar un mensaje de aviso: "Descarga no disponible en modo DEMO."
+  5. El título en el header debe mostrar:
+         "DEMO – Consulta de Referencias"
+     y agregar un badge visible: [MODO DEMO] en color naranja/amarillo.
+  6. La contraseña "demo1234" debe almacenarse como hash con
+     password_hash('demo1234', PASSWORD_DEFAULT) en el código PHP.
+     Hash de ejemplo (bcrypt):
+     $2y$10$Kz3Q1XvYmN8pL5wT0uRjOeGhB7dAqZoWcViJfSxM4EnPtUlY6Rs2C
+
+================================================================================
+  FIN DEL ARCHIVO DE DATOS DEMO
+================================================================================
