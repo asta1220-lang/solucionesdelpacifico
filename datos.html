@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEMO – Análisis Inteligente soluciones del pacifico</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+:root {
+  --navy:#0f172a; --navy2:#1e293b; --navy3:#263548;
+  --cyan:#22d3ee; --cyan2:#0891b2; --cyan3:#0e7490;
+  --accent:#f59e0b; --danger:#ef4444; --success:#10b981;
+  --text:#e2e8f0; --muted:#64748b; --border:rgba(255,255,255,0.08);
+  --demo-color:#f59e0b;
+  --shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* DEMO BANNER */
+.demo-banner{
+  background:linear-gradient(90deg,rgba(245,158,11,0.15),rgba(245,158,11,0.08),rgba(245,158,11,0.15));
+  border-bottom:1px solid rgba(245,158,11,0.3);
+  padding:8px 20px;text-align:center;font-size:.75rem;color:var(--demo-color);
+  letter-spacing:.3px;font-weight:600;
+  animation:demoPulse 3s ease-in-out infinite;
+}
+@keyframes demoPulse{0%,100%{background:linear-gradient(90deg,rgba(245,158,11,0.12),rgba(245,158,11,0.06),rgba(245,158,11,0.12))}50%{background:linear-gradient(90deg,rgba(245,158,11,0.22),rgba(245,158,11,0.14),rgba(245,158,11,0.22))}}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  border-bottom:1px solid var(--border);
+  padding:20px 40px;display:flex;align-items:center;justify-content:center;
+  gap:20px;flex-wrap:wrap;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  position:sticky;top:0;z-index:100;
+}
+.header-title{
+  font-size:1.8rem;font-weight:800;
+  background:linear-gradient(90deg,var(--cyan2),var(--cyan),#67e8f9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-align:center;
+}
+.header-sub{font-size:.8rem;color:var(--muted);text-align:center;margin-top:4px}
+.demo-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(245,158,11,0.12);border:1.5px solid rgba(245,158,11,0.4);
+  border-radius:20px;padding:5px 14px;font-size:.72rem;
+  color:var(--demo-color);font-weight:700;white-space:nowrap;
+}
+.demo-badge::before{content:'';width:7px;height:7px;background:var(--demo-color);border-radius:50%;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TABS */
+.tabs-wrap{
+  display:flex;justify-content:center;padding:20px 20px 0;
+  position:sticky;top:81px;z-index:99;
+  background:linear-gradient(180deg,var(--navy) 80%,transparent);
+}
+.tabs{
+  display:flex;background:rgba(30,41,59,0.9);backdrop-filter:blur(12px);
+  border-radius:16px;padding:6px;border:1px solid var(--border);
+  box-shadow:var(--shadow);gap:4px;
+}
+.tab-btn{
+  flex:1;min-width:120px;padding:12px 20px;border:none;background:transparent;
+  color:var(--muted);font-weight:700;font-size:.9rem;cursor:pointer;
+  transition:all .3s;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;gap:8px;font-family:'Syne',sans-serif;
+}
+.tab-btn i{font-size:1rem}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.tab-btn.active{
+  background:linear-gradient(135deg,var(--cyan2),var(--cyan3));
+  color:#fff;box-shadow:0 4px 20px rgba(8,145,178,0.4);
+  transform:translateY(-1px);
+}
+
+/* MAIN */
+.main{max-width:1500px;margin:0 auto;padding:30px 20px}
+
+/* SECTION HEADER */
+.section-title{
+  font-size:1.8rem;font-weight:800;color:#fff;
+  margin:0 0 8px;display:flex;align-items:center;gap:12px;
+}
+.section-title i{background:linear-gradient(135deg,var(--cyan2),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* TOTAL BOX */
+.total-box{
+  background:linear-gradient(135deg,rgba(8,145,178,0.12),rgba(34,211,238,0.06));
+  border:1px solid rgba(34,211,238,0.2);border-radius:16px;
+  padding:20px 30px;margin:20px 0;text-align:center;
+  font-size:1.5rem;font-weight:800;
+  background-clip:text;
+}
+.total-box .num{
+  background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.total-box .sub{font-size:.85rem;color:var(--muted);margin-top:6px;font-weight:500}
+
+/* FILTERS */
+.filters{
+  display:flex;flex-wrap:wrap;gap:16px;margin:20px 0;
+  background:rgba(30,41,59,0.6);border:1px solid var(--border);
+  border-radius:16px;padding:20px;
+}
+.filter-group{display:flex;flex-direction:column;gap:8px;min-width:160px}
+.filter-label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.filter-label i{color:var(--cyan2)}
+.filter-select, .filter-input{
+  padding:10px 14px;border-radius:10px;
+  border:1.5px solid var(--border);background:rgba(0,0,0,0.3);
+  color:var(--text);font-size:.9rem;font-family:'Syne',sans-serif;
+  transition:border-color .2s;cursor:pointer;
+}
+.filter-select:focus,.filter-input:focus{outline:none;border-color:var(--cyan2);box-shadow:0 0 0 3px rgba(8,145,178,0.15)}
+.anios-grid{display:flex;flex-wrap:wrap;gap:6px}
+.anio-chip{
+  padding:6px 14px;border-radius:20px;cursor:pointer;font-size:.8rem;font-weight:700;
+  border:1.5px solid var(--border);background:transparent;color:var(--muted);
+  transition:all .2s;font-family:'Syne',sans-serif;
+}
+.anio-chip:hover{border-color:var(--cyan2);color:var(--text)}
+.anio-chip.active{background:linear-gradient(135deg,var(--cyan2),var(--cyan3));border-color:transparent;color:#fff;box-shadow:0 2px 10px rgba(8,145,178,0.3)}
+
+/* CHARTS */
+.charts-row{display:flex;flex-wrap:wrap;gap:24px;margin:24px 0}
+.chart-card{
+  flex:1;min-width:380px;max-width:700px;height:480px;
+  background:rgba(15,23,42,0.85);border:1px solid var(--border);
+  border-radius:20px;padding:24px;
+  box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s;
+  display:flex;flex-direction:column;
+}
+.chart-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 20px rgba(34,211,238,0.1)}
+.chart-title{
+  font-size:1rem;font-weight:700;color:#fff;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.chart-title i{color:var(--cyan)}
+.chart-wrapper{flex:1;position:relative;min-height:0}
+.chart-wrapper canvas{width:100%!important;height:100%!important}
+
+/* MATRIZ */
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--cyan2),var(--cyan3));
+  color:#fff;border:none;border-radius:30px;
+  padding:14px 32px;font-size:1rem;font-weight:700;
+  cursor:pointer;transition:all .25s;font-family:'Syne',sans-serif;
+  box-shadow:0 6px 20px rgba(8,145,178,0.35);
+}
+.btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 30px rgba(8,145,178,0.5)}
+.btn-success{background:linear-gradient(135deg,var(--success),#059669)!important;box-shadow:0 6px 20px rgba(16,185,129,0.35)!important}
+.btn-danger{background:linear-gradient(135deg,var(--danger),#b91c1c)!important;box-shadow:0 6px 20px rgba(239,68,68,0.3)!important}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:24px 0}
+
+.matriz-wrap{
+  background:rgba(15,23,42,0.95);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;margin:20px 0;display:none;
+  animation:slideUp .4s ease-out forwards;
+}
+.matriz-wrap.open{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.matriz-head{
+  background:linear-gradient(135deg,var(--navy2),var(--navy3));
+  padding:18px 28px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.matriz-head-title{font-size:1.1rem;font-weight:800;background:linear-gradient(90deg,var(--cyan2),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:center;gap:10px}
+.table-scroll{max-height:520px;overflow-y:auto;padding:16px}
+.table-scroll::-webkit-scrollbar{width:4px}
+.table-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+table{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:.88rem}
+th{background:rgba(30,41,59,0.8);color:#fff;font-weight:700;padding:14px 18px;text-align:left;font-size:.8rem;text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;z-index:5;border-bottom:2px solid var(--cyan2)}
+td{padding:13px 18px;background:rgba(30,41,59,0.5);transition:background .15s}
+tr:hover td{background:rgba(8,145,178,0.12)}
+.t-ref{color:var(--cyan);font-family:'DM Mono',monospace;font-weight:500}
+.t-date{color:var(--accent);font-family:'DM Mono',monospace}
+.t-cliente{color:var(--success);font-weight:600}
+.t-rojo{color:var(--danger);font-weight:700}
+.t-verde{color:var(--success);font-weight:700}
+.t-aduana{color:var(--cyan);font-weight:600}
+.t-previo{color:var(--muted)}
+.total-footer{padding:14px 28px;background:rgba(16,185,129,0.1);border-top:2px solid var(--success);color:var(--success);font-weight:800;font-size:1rem;text-align:right}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px;background:rgba(30,41,59,0.4);border-radius:20px;margin:20px 0;color:var(--muted)}
+.empty-state i{font-size:4rem;margin-bottom:16px;opacity:.4;display:block}
+
+/* PORCENTAJE BOX */
+.pct-box{
+  background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);
+  border-radius:12px;padding:14px 20px;margin:12px 0;font-size:.95rem;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.pct-box strong{color:var(--accent);font-size:1.3rem}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .header{padding:14px 16px}
+  .header-title{font-size:1.3rem}
+  .tabs-wrap{top:71px}
+  .tab-btn{min-width:80px;padding:10px 12px;font-size:.8rem}
+  .chart-card{min-width:100%;height:420px}
+  .filters{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner">
+  ⚠️ <strong>MODO DEMO</strong> — Sin conexión a bases de datos. Todos los datos son ficticios para demostración.
+  &nbsp;|&nbsp; soluciones del pacifico – Análisis Inteligente
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title"><i class="fas fa-chart-line" style="font-size:1.4rem"></i> DEMO – Análisis Inteligente soluciones del pacifico</div>
+    <div class="header-sub">Dashboard de seguimiento aduanal · Datos de prueba</div>
+  </div>
+  <span class="demo-badge">MODO DEMO</span>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="setTab('referencias')"><i class="fas fa-chart-bar"></i>Referencias</button>
+    <button class="tab-btn" onclick="setTab('indicadores')"><i class="fas fa-tachometer-alt"></i>Indicadores</button>
+    <button class="tab-btn" onclick="setTab('incidencias')"><i class="fas fa-exclamation-triangle"></i>Incidencias</button>
+    <button class="tab-btn" onclick="setTab('proveedores')"><i class="fas fa-truck"></i>Proveedores</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════
+       TAB: REFERENCIAS
+  ══════════════════════════════════ -->
+  <div id="tab-referencias">
+    <div class="section-title"><i class="fas fa-database"></i> Análisis de Referencias</div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-calendar-alt"></i>Años</span>
+        <div class="anios-grid" id="ref-anios"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-calendar-week"></i>Mes</span>
+        <select class="filter-select" id="ref-mes" onchange="renderReferencias()">
+          <option value="0">Todos los meses</option>
+          <option value="1">Enero</option><option value="2">Febrero</option>
+          <option value="3">Marzo</option><option value="4">Abril</option>
+          <option value="5">Mayo</option><option value="6">Junio</option>
+          <option value="7">Julio</option><option value="8">Agosto</option>
+          <option value="9">Septiembre</option><option value="10">Octubre</option>
+          <option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-ship"></i>Aduana</span>
+        <select class="filter-select" id="ref-aduana" onchange="renderReferencias()">
+          <option>Todas las aduanas</option>
+          <option>Manzanillo</option><option>Veracruz</option>
+          <option>Lázaro Cárdenas</option><option>Altamira</option>
+          <option>Nuevo Laredo</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-user-tie"></i>Cliente</span>
+        <input class="filter-input" id="ref-cliente" list="ref-clientes-list" placeholder="Buscar cliente..." oninput="renderReferencias()">
+        <datalist id="ref-clientes-list">
+          <option>Importaciones del Pacífico S.A. de C.V.</option>
+          <option>Exportaciones del Norte S.A. de C.V.</option>
+          <option>Comercializadora del Golfo S.A. de C.V.</option>
+          <option>Distribuidora Centro S.A. de C.V.</option>
+          <option>Grupo Manufacturero Bajío S.A. de C.V.</option>
+        </datalist>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <span id="ref-total-label">Cargando...</span>
+      <div class="sub">Referencias procesadas</div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-chart-bar"></i><span id="ref-bar-title">Referencias por Mes</span></div>
+        <div class="chart-wrapper"><canvas id="chartRefBarras"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-ship"></i>Distribución por Aduana</div>
+        <div class="chart-wrapper"><canvas id="chartRefAduana"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card" style="max-width:900px;margin:0 auto">
+        <div class="chart-title"><i class="fas fa-users"></i>Distribución por Cliente</div>
+        <div class="chart-wrapper"><canvas id="chartRefCliente"></canvas></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="toggleMatriz('ref-matriz')">
+        <i class="fas fa-table"></i>Ver Matriz de Datos
+      </button>
+    </div>
+    <div class="matriz-wrap" id="ref-matriz">
+      <div class="matriz-head">
+        <div class="matriz-head-title"><i class="fas fa-database"></i>Matriz de Referencias</div>
+        <button class="btn-primary btn-danger" style="padding:8px 18px;font-size:.85rem" onclick="toggleMatriz('ref-matriz')"><i class="fas fa-times"></i>Cerrar</button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th><i class="fas fa-hashtag"></i> Referencia</th><th><i class="fas fa-clock"></i> Fecha Apertura</th><th><i class="fas fa-user-tie"></i> Cliente</th></tr></thead>
+          <tbody id="ref-tbody"></tbody>
+        </table>
+      </div>
+      <div class="total-footer" id="ref-total-footer"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB: INDICADORES
+  ══════════════════════════════════ -->
+  <div id="tab-indicadores" style="display:none">
+    <div class="section-title"><i class="fas fa-tachometer-alt"></i>Indicadores (Evento 48)</div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-calendar-alt"></i>Años</span>
+        <div class="anios-grid" id="ind-anios"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-ship"></i>Aduana</span>
+        <select class="filter-select" id="ind-aduana" onchange="renderIndicadores()">
+          <option>Todas las aduanas</option>
+          <option>Manzanillo</option><option>Veracruz</option>
+          <option>Lázaro Cárdenas</option><option>Altamira</option>
+          <option>Nuevo Laredo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <span class="num">1,240</span> referencias con Evento 48
+      <div class="sub">Año 2024 · Datos de prueba</div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-traffic-light"></i>Estado de Reconocimiento</div>
+        <div class="chart-wrapper"><canvas id="chartIndReconocimiento"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-file-contract"></i>Tipo de Previo</div>
+        <div class="chart-wrapper"><canvas id="chartIndPrevio"></canvas></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="toggleMatriz('ind-matriz')">
+        <i class="fas fa-table"></i>Ver Matriz (15 registros)
+      </button>
+      <button class="btn-primary btn-success" onclick="descargarCSV()">
+        <i class="fas fa-file-csv"></i>Descargar CSV
+      </button>
+    </div>
+    <div class="matriz-wrap" id="ind-matriz">
+      <div class="matriz-head">
+        <div class="matriz-head-title"><i class="fas fa-tachometer-alt"></i>Matriz de Indicadores (Evento 48)</div>
+        <button class="btn-primary btn-danger" style="padding:8px 18px;font-size:.85rem" onclick="toggleMatriz('ind-matriz')"><i class="fas fa-times"></i>Cerrar</button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Referencia</th><th>Cliente</th><th>Aduana</th>
+            <th>Fecha Evento</th><th>Operación</th><th>Estado</th><th>Previo</th>
+          </tr></thead>
+          <tbody id="ind-tbody"></tbody>
+        </table>
+      </div>
+      <div class="total-footer">Total: 15 registros de muestra</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB: INCIDENCIAS
+  ══════════════════════════════════ -->
+  <div id="tab-incidencias" style="display:none">
+    <div class="section-title"><i class="fas fa-exclamation-triangle"></i>Análisis de Incidencias</div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-calendar-alt"></i>Años</span>
+        <div class="anios-grid" id="inc-anios"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label"><i class="fas fa-user-tie"></i>Cliente</span>
+        <select class="filter-select" id="inc-cliente" onchange="renderIncidencias()">
+          <option value="">Todos los clientes</option>
+          <option>Importaciones del Pacífico S.A. de C.V.</option>
+          <option>Exportaciones del Norte S.A. de C.V.</option>
+          <option>Comercializadora del Golfo S.A. de C.V.</option>
+          <option>Distribuidora Centro S.A. de C.V.</option>
+          <option>Grupo Manufacturero Bajío S.A. de C.V.</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <span id="inc-total-label"><span class="num">186</span> incidencias</span>
+      <div class="sub">Año 2024 · Datos de prueba</div>
+    </div>
+
+    <div id="inc-pct-box"></div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-list-alt"></i>Conceptos de Incidencia</div>
+        <div class="chart-wrapper"><canvas id="chartIncConceptos"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-users"></i>Incidencias por Cliente</div>
+        <div class="chart-wrapper"><canvas id="chartIncClientes"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card" style="max-width:600px;margin:0 auto">
+        <div class="chart-title"><i class="fas fa-chart-pie"></i>Incidencias vs Referencias</div>
+        <div class="chart-wrapper"><canvas id="chartIncVsRef"></canvas></div>
+        <div style="text-align:center;margin-top:10px;font-size:.8rem;color:var(--muted)">
+          <span style="color:var(--danger);font-weight:700">● Incidencias</span> &nbsp;|&nbsp;
+          <span style="color:var(--success);font-weight:700">● Resto de Referencias</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="toggleMatriz('inc-matriz')">
+        <i class="fas fa-table"></i>Ver Matriz de Incidencias
+      </button>
+    </div>
+    <div class="matriz-wrap" id="inc-matriz">
+      <div class="matriz-head">
+        <div class="matriz-head-title"><i class="fas fa-exclamation-triangle"></i>Matriz de Incidencias</div>
+        <button class="btn-primary btn-danger" style="padding:8px 18px;font-size:.85rem" onclick="toggleMatriz('inc-matriz')"><i class="fas fa-times"></i>Cerrar</button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Referencia</th><th>Cliente</th><th>Concepto</th><th>Fecha Notificación</th>
+          </tr></thead>
+          <tbody id="inc-tbody"></tbody>
+        </table>
+      </div>
+      <div class="total-footer" id="inc-total-footer"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB: PROVEEDORES
+  ══════════════════════════════════ -->
+  <div id="tab-proveedores" style="display:none">
+    <div class="section-title"><i class="fas fa-truck"></i>Análisis de Proveedores</div>
+
+    <div class="total-box">
+      <span class="num">1,240</span> referencias · <span class="num">10</span> proveedores principales
+      <div class="sub">Año 2024 · Datos de prueba</div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-file-contract"></i>Tipos de Previo</div>
+        <div class="chart-wrapper"><canvas id="chartProvPrevio"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-truck"></i>Top 10 Proveedores</div>
+        <div class="chart-wrapper"><canvas id="chartTopProv"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card" style="max-width:900px;margin:0 auto">
+        <div class="chart-title"><i class="fas fa-calendar-day"></i>Referencias por Mes 2024</div>
+        <div class="chart-wrapper"><canvas id="chartProvMes"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  DATOS DEMO
+// ════════════════════════════════════════════════════════════
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const COLORES = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED','#C9CBCF','#F77825','#7BC225'];
+
+const ANIOS_BASE = [2024,2023,2022,2021,2020,2019,2018];
+
+const REFS_MES_BASE = [87,92,105,98,113,120,108,115,102,118,95,87]; // 2024
+const REFS_ANIO = {2018:850,2019:920,2020:780,2021:995,2022:1120,2023:1185,2024:1240};
+
+const ADUANA_DIST = [
+  {n:'Manzanillo',c:512},{n:'Veracruz',c:298},{n:'Lázaro Cárdenas',c:210},
+  {n:'Altamira',c:135},{n:'Nuevo Laredo',c:85}
+];
+const CLIENTE_DIST = [
+  {n:'Importaciones del Pacífico S.A. de C.V.',c:380},
+  {n:'Exportaciones del Norte S.A. de C.V.',c:290},
+  {n:'Comercializadora del Golfo S.A. de C.V.',c:245},
+  {n:'Distribuidora Centro S.A. de C.V.',c:198},
+  {n:'Grupo Manufacturero Bajío S.A. de C.V.',c:127}
+];
+
+const REFS_MATRIZ = [
+  {r:'PRUEBA-2024-001',f:'08/01/2024 09:00',c:'Importaciones del Pacífico S.A. de C.V.'},
+  {r:'PRUEBA-2024-002',f:'15/01/2024 11:15',c:'Exportaciones del Norte S.A. de C.V.'},
+  {r:'PRUEBA-2024-003',f:'22/01/2024 14:00',c:'Comercializadora del Golfo S.A. de C.V.'},
+  {r:'PRUEBA-2024-004',f:'03/02/2024 08:45',c:'Distribuidora Centro S.A. de C.V.'},
+  {r:'PRUEBA-2024-005',f:'14/02/2024 10:30',c:'Grupo Manufacturero Bajío S.A. de C.V.'},
+  {r:'PRUEBA-2024-006',f:'19/02/2024 15:20',c:'Importaciones del Pacífico S.A. de C.V.'},
+  {r:'PRUEBA-2024-007',f:'05/03/2024 09:00',c:'Exportaciones del Norte S.A. de C.V.'},
+  {r:'PRUEBA-2024-008',f:'12/03/2024 13:45',c:'Comercializadora del Golfo S.A. de C.V.'},
+  {r:'PRUEBA-2024-009',f:'28/03/2024 11:00',c:'Distribuidora Centro S.A. de C.V.'},
+  {r:'PRUEBA-2024-010',f:'02/04/2024 08:30',c:'Importaciones del Pacífico S.A. de C.V.'},
+  {r:'PRUEBA-2024-011',f:'17/04/2024 14:15',c:'Grupo Manufacturero Bajío S.A. de C.V.'},
+  {r:'PRUEBA-2024-012',f:'06/05/2024 09:45',c:'Exportaciones del Norte S.A. de C.V.'},
+  {r:'PRUEBA-2024-013',f:'21/05/2024 12:30',c:'Comercializadora del Golfo S.A. de C.V.'},
+  {r:'PRUEBA-2024-014',f:'10/06/2024 10:00',c:'Importaciones del Pacífico S.A. de C.V.'},
+  {r:'PRUEBA-2024-015',f:'25/06/2024 16:00',c:'Distribuidora Centro S.A. de C.V.'},
+];
+
+const IND_RECONOCIMIENTO = [{e:'VERDE',c:1054},{e:'ROJO',c:186}];
+const IND_PREVIO = [
+  {t:'SIN PREVIO',c:487},{t:'PREVIO OCULAR',c:310},{t:'PREVIO EN ORIGEN',c:198},
+  {t:'PREVIO OCULAR EXPRESS',c:98},{t:'PREVIO DESYCON',c:75},
+  {t:'PREVIO EXHAUSTIVO',c:42},{t:'PREVIO MANUAL',c:18},{t:'PREVIO MOVIL',c:12}
+];
+const IND_MATRIZ = [
+  {r:'PRUEBA-2024-001',c:'Importaciones del Pacífico S.A. de C.V.',a:'Manzanillo',f:'08/01/2024 09:30',op:'IMPORTACION',e:'VERDE',p:'SIN PREVIO'},
+  {r:'PRUEBA-2024-002',c:'Exportaciones del Norte S.A. de C.V.',a:'Nuevo Laredo',f:'15/01/2024 11:15',op:'EXPORTACION',e:'VERDE',p:'PREVIO OCULAR'},
+  {r:'PRUEBA-2024-003',c:'Comercializadora del Golfo S.A. de C.V.',a:'Veracruz',f:'22/01/2024 14:00',op:'IMPORTACION',e:'ROJO',p:'PREVIO EN ORIGEN'},
+  {r:'PRUEBA-2024-004',c:'Distribuidora Centro S.A. de C.V.',a:'Lázaro Cárdenas',f:'03/02/2024 08:45',op:'IMPORTACION',e:'VERDE',p:'SIN PREVIO'},
+  {r:'PRUEBA-2024-005',c:'Grupo Manufacturero Bajío S.A. de C.V.',a:'Altamira',f:'14/02/2024 10:30',op:'IMPORTACION',e:'ROJO',p:'PREVIO OCULAR EXPRESS'},
+  {r:'PRUEBA-2024-006',c:'Importaciones del Pacífico S.A. de C.V.',a:'Manzanillo',f:'19/02/2024 15:20',op:'IMPORTACION',e:'VERDE',p:'SIN PREVIO'},
+  {r:'PRUEBA-2024-007',c:'Exportaciones del Norte S.A. de C.V.',a:'Nuevo Laredo',f:'05/03/2024 09:00',op:'EXPORTACION',e:'VERDE',p:'PREVIO MANUAL'},
+  {r:'PRUEBA-2024-008',c:'Comercializadora del Golfo S.A. de C.V.',a:'Veracruz',f:'12/03/2024 13:45',op:'IMPORTACION',e:'VERDE',p:'PREVIO DESYCON'},
+  {r:'PRUEBA-2024-009',c:'Distribuidora Centro S.A. de C.V.',a:'Manzanillo',f:'28/03/2024 11:00',op:'IMPORTACION',e:'ROJO',p:'PREVIO EXHAUSTIVO'},
+  {r:'PRUEBA-2024-010',c:'Importaciones del Pacífico S.A. de C.V.',a:'Manzanillo',f:'02/04/2024 08:30',op:'IMPORTACION',e:'VERDE',p:'SIN PREVIO'},
+  {r:'PRUEBA-2024-011',c:'Grupo Manufacturero Bajío S.A. de C.V.',a:'Altamira',f:'17/04/2024 14:15',op:'IMPORTACION',e:'VERDE',p:'PREVIO OCULAR'},
+  {r:'PRUEBA-2024-012',c:'Exportaciones del Norte S.A. de C.V.',a:'Veracruz',f:'06/05/2024 09:45',op:'EXPORTACION',e:'VERDE',p:'PREVIO EN ORIGEN'},
+  {r:'PRUEBA-2024-013',c:'Comercializadora del Golfo S.A. de C.V.',a:'Lázaro Cárdenas',f:'21/05/2024 12:30',op:'IMPORTACION',e:'ROJO',p:'PREVIO MOVIL'},
+  {r:'PRUEBA-2024-014',c:'Importaciones del Pacífico S.A. de C.V.',a:'Manzanillo',f:'10/06/2024 10:00',op:'IMPORTACION',e:'VERDE',p:'SIN PREVIO'},
+  {r:'PRUEBA-2024-015',c:'Distribuidora Centro S.A. de C.V.',a:'Veracruz',f:'25/06/2024 16:00',op:'IMPORTACION',e:'VERDE',p:'PREVIO OCULAR EXPRESS'},
+];
+
+const INC_CONCEPTOS = [
+  {t:'Documentos incompletos',c:42},{t:'Error en factura',c:35},
+  {t:'Discrepancia de peso',c:28},{t:'Descripción incorrecta',c:24},
+  {t:'Permiso faltante',c:18},{t:'Valor declarado incorrecto',c:15},
+  {t:'Clasificación arancelaria',c:12},{t:'Marcas y etiquetas',c:7},
+  {t:'Certificado de origen',c:3},{t:'Otros',c:2}
+];
+const INC_CLIENTES = [
+  {n:'Importaciones del Pacífico',c:52},{n:'Exportaciones del Norte',c:38},
+  {n:'Comer. del Golfo',c:35},{n:'Distribuidora Centro',c:30},
+  {n:'Grupo Manufacturero',c:18},{n:'Sin cliente',c:8},
+  {n:'Otros A',c:3},{n:'Otros B',c:2}
+];
+const INC_MATRIZ = [
+  {r:'PRUEBA-2024-003',c:'Comercializadora del Golfo S.A. de C.V.',t:'Error en factura',f:'22/01/2024 14:05'},
+  {r:'PRUEBA-2024-005',c:'Grupo Manufacturero Bajío S.A. de C.V.',t:'Documentos incompletos',f:'14/02/2024 10:35'},
+  {r:'PRUEBA-2024-009',c:'Distribuidora Centro S.A. de C.V.',t:'Discrepancia de peso',f:'28/03/2024 11:05'},
+  {r:'PRUEBA-2024-013',c:'Comercializadora del Golfo S.A. de C.V.',t:'Permiso faltante',f:'21/05/2024 12:35'},
+  {r:'PRUEBA-2024-017',c:'Importaciones del Pacífico S.A. de C.V.',t:'Descripción incorrecta',f:'03/06/2024 09:15'},
+  {r:'PRUEBA-2024-021',c:'Exportaciones del Norte S.A. de C.V.',t:'Valor declarado incorrecto',f:'18/06/2024 14:20'},
+  {r:'PRUEBA-2024-025',c:'Distribuidora Centro S.A. de C.V.',t:'Clasificación arancelaria',f:'02/07/2024 10:10'},
+  {r:'PRUEBA-2024-029',c:'Grupo Manufacturero Bajío S.A. de C.V.',t:'Marcas y etiquetas',f:'15/07/2024 15:30'},
+  {r:'PRUEBA-2024-033',c:'Comercializadora del Golfo S.A. de C.V.',t:'Error en factura',f:'05/08/2024 11:45'},
+  {r:'PRUEBA-2024-037',c:'Importaciones del Pacífico S.A. de C.V.',t:'Documentos incompletos',f:'20/08/2024 09:00'},
+  {r:'PRUEBA-2024-041',c:'Exportaciones del Norte S.A. de C.V.',t:'Permiso faltante',f:'04/09/2024 13:15'},
+  {r:'PRUEBA-2024-045',c:'Distribuidora Centro S.A. de C.V.',t:'Discrepancia de peso',f:'19/09/2024 10:30'},
+  {r:'PRUEBA-2024-049',c:'Importaciones del Pacífico S.A. de C.V.',t:'Descripción incorrecta',f:'03/10/2024 08:45'},
+  {r:'PRUEBA-2024-053',c:'Comercializadora del Golfo S.A. de C.V.',t:'Certificado de origen',f:'17/10/2024 14:00'},
+  {r:'PRUEBA-2024-057',c:'Grupo Manufacturero Bajío S.A. de C.V.',t:'Valor declarado incorrecto',f:'01/11/2024 11:20'},
+];
+const INC_REFS_BY_CLIENT = {
+  'Importaciones del Pacífico S.A. de C.V.':380,
+  'Exportaciones del Norte S.A. de C.V.':290,
+  'Comercializadora del Golfo S.A. de C.V.':245,
+  'Distribuidora Centro S.A. de C.V.':198,
+  'Grupo Manufacturero Bajío S.A. de C.V.':127
+};
+
+const PROV_TOP = [
+  {n:'Samsung Electronics',c:145},{n:'Toyota Motor Corp.',c:132},{n:'LG Electronics',c:118},
+  {n:'Caterpillar Inc.',c:98},{n:'Bosch GmbH',c:87},{n:'Siemens AG',c:76},
+  {n:'3M Company',c:65},{n:'Honeywell Intl.',c:54},{n:'General Electric',c:43},
+  {n:'Schneider Electric',c:32}
+];
+
+// ════════════════════════════════════════════════════════════
+//  ESTADO
+// ════════════════════════════════════════════════════════════
+let activeTab = 'referencias';
+let refAnios = [2024];
+let refMulti = false;
+let charts = {};
+
+// ════════════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════════════
+function setTab(name) {
+  ['referencias','indicadores','incidencias','proveedores'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name?'block':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['referencias','indicadores','incidencias','proveedores'][i]===name);
+  });
+  activeTab = name;
+  if(name==='indicadores' && !charts['indRec']) renderIndicadores();
+  if(name==='incidencias' && !charts['incConc']) renderIncidencias();
+  if(name==='proveedores' && !charts['provPrevio']) renderProveedores();
+}
+
+// ════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function toggleMatriz(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  if(el.classList.contains('open')) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function fmtNum(n) { return n.toLocaleString('es-MX'); }
+
+function buildAnioChips(containerId, selectedAnios, onChange) {
+  const cont = document.getElementById(containerId);
+  cont.innerHTML = '';
+  ANIOS_BASE.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'anio-chip' + (selectedAnios.includes(a)?' active':'');
+    btn.textContent = a;
+    btn.onclick = () => {
+      if(selectedAnios.includes(a)) {
+        if(selectedAnios.length>1) selectedAnios.splice(selectedAnios.indexOf(a),1);
+      } else {
+        selectedAnios.push(a);
+      }
+      buildAnioChips(containerId, selectedAnios, onChange);
+      onChange();
+    };
+    cont.appendChild(btn);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  REFERENCIAS
+// ════════════════════════════════════════════════════════════
+let refSelectedAnios = [2024];
+
+function renderReferencias() {
+  const mes = parseInt(document.getElementById('ref-mes').value)||0;
+  const aduana = document.getElementById('ref-aduana').value;
+  const cliente = document.getElementById('ref-cliente').value.trim();
+  const multi = refSelectedAnios.length > 1;
+
+  // Calcular total
+  let total = 0;
+  let barLabels = [], barData = [];
+
+  if(multi) {
+    // multi-año
+    refSelectedAnios.sort((a,b)=>b-a).forEach(a => {
+      const base = REFS_ANIO[a]||0;
+      const factor = aduana==='Todas las aduanas'?1:getAduanaFactor(aduana);
+      const cfactor = cliente?getClienteFactor(cliente):1;
+      const v = Math.round(base*factor*cfactor);
+      barLabels.push(a); barData.push(v); total+=v;
+    });
+    document.getElementById('ref-bar-title').textContent = 'Referencias por Año';
+  } else {
+    const anio = refSelectedAnios[0]||2024;
+    const base = REFS_ANIO[anio]||1240;
+    const aFact = aduana==='Todas las aduanas'?1:getAduanaFactor(aduana);
+    const cFact = cliente?getClienteFactor(cliente):1;
+
+    if(mes===0) {
+      REFS_MES_BASE.forEach((v,i)=>{ const adj=Math.round(v*aFact*cFact); barData.push(adj); total+=adj; });
+      barLabels = MESES;
+      document.getElementById('ref-bar-title').textContent = `Referencias por Mes (${anio})`;
+    } else {
+      barData = REFS_MES_BASE.map(v=>Math.round(v*aFact*cFact));
+      total = Math.round(REFS_MES_BASE[mes-1]*aFact*cFact);
+      barLabels = MESES;
+      document.getElementById('ref-bar-title').textContent = `Referencias – ${MESES_FULL[mes-1]} ${anio}`;
+    }
+  }
+
+  document.getElementById('ref-total-label').innerHTML =
+    `<span class="num">${fmtNum(total)}</span> referencias ${multi?'en '+refSelectedAnios.join(', '):'en el año '+(refSelectedAnios[0]||2024)}`;
+
+  // Gráfica barras
+  destroyChart('refBarras');
+  const ctxB = document.getElementById('chartRefBarras').getContext('2d');
+  charts['refBarras'] = new Chart(ctxB, {
+    type:'bar',
+    data:{
+      labels:barLabels,
+      datasets:[{label:'Cantidad',data:barData,
+        backgroundColor:'rgba(8,145,178,0.75)',borderColor:'rgba(34,211,238,1)',
+        borderWidth:2,borderRadius:8,borderSkipped:false}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      animation:{duration:1200,easing:'easeOutBounce'},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{anchor:'end',align:'top',color:'#cbd5e1',font:{weight:'bold',size:11},formatter:v=>v>0?v:''}
+      },
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.08)'},ticks:{color:'#94a3b8'}},
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#94a3b8',font:{weight:'bold'}}}
+      }
+    }, plugins:[ChartDataLabels]
+  });
+
+  // Gráfica aduana
+  const aduFilt = aduana==='Todas las aduanas'?ADUANA_DIST:ADUANA_DIST.filter(d=>d.n===aduana);
+  const aduData = aduFilt.map(d=>d.c);
+  const aduLabels = aduFilt.map(d=>d.n);
+  destroyChart('refAduana');
+  const ctxA = document.getElementById('chartRefAduana').getContext('2d');
+  charts['refAduana'] = new Chart(ctxA,{
+    type:'doughnut',
+    data:{labels:aduLabels,datasets:[{data:aduData,backgroundColor:COLORES,borderWidth:3,borderColor:'#0f172a',hoverBorderWidth:5,hoverBorderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:1500,easing:'easeOutElastic'},cutout:'65%',
+      plugins:{legend:{position:'right',labels:{color:'#e2e8f0',font:{size:12},padding:12}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?((v/t)*100).toFixed(1)+'%':''},color:'#fff',font:{weight:'bold',size:13}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Gráfica cliente
+  const cliFilt = cliente?CLIENTE_DIST.filter(d=>d.n.toLowerCase().includes(cliente.toLowerCase())):CLIENTE_DIST;
+  destroyChart('refCliente');
+  const ctxC = document.getElementById('chartRefCliente').getContext('2d');
+  charts['refCliente'] = new Chart(ctxC,{
+    type:'pie',
+    data:{labels:cliFilt.map(d=>d.n),datasets:[{data:cliFilt.map(d=>d.c),backgroundColor:COLORES,borderWidth:2,borderColor:'#0f172a',hoverBorderWidth:4,hoverBorderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:2000,easing:'easeInOutExpo'},
+      plugins:{legend:{position:'right',labels:{color:'#e2e8f0',font:{size:11},padding:12}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?((v/t)*100).toFixed(1)+'%':''},color:'#fff',font:{weight:'bold',size:12}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Tabla
+  const tbody = document.getElementById('ref-tbody');
+  const filtered = cliente?REFS_MATRIZ.filter(r=>r.c.toLowerCase().includes(cliente.toLowerCase())):REFS_MATRIZ;
+  tbody.innerHTML = filtered.map(r=>`
+    <tr>
+      <td class="t-ref">${r.r}</td>
+      <td class="t-date">${r.f}</td>
+      <td class="t-cliente">${r.c}</td>
+    </tr>`).join('');
+  document.getElementById('ref-total-footer').innerHTML = `<i class="fas fa-calculator"></i> Total: ${fmtNum(filtered.length)} registros de muestra`;
+}
+
+function getAduanaFactor(a) {
+  const map={'Manzanillo':.413,'Veracruz':.24,'Lázaro Cárdenas':.169,'Altamira':.109,'Nuevo Laredo':.069};
+  return map[a]||1;
+}
+function getClienteFactor(c) {
+  const map={
+    'Importaciones del Pacífico S.A. de C.V.':.306,
+    'Exportaciones del Norte S.A. de C.V.':.234,
+    'Comercializadora del Golfo S.A. de C.V.':.198,
+    'Distribuidora Centro S.A. de C.V.':.16,
+    'Grupo Manufacturero Bajío S.A. de C.V.':.102
+  };
+  for(const k in map) { if(k.toLowerCase().includes(c.toLowerCase())) return map[k]; }
+  return .15;
+}
+
+// ════════════════════════════════════════════════════════════
+//  INDICADORES
+// ════════════════════════════════════════════════════════════
+function renderIndicadores() {
+  destroyChart('indRec');
+  const ctxR = document.getElementById('chartIndReconocimiento').getContext('2d');
+  charts['indRec'] = new Chart(ctxR,{
+    type:'doughnut',
+    data:{
+      labels:IND_RECONOCIMIENTO.map(d=>d.e),
+      datasets:[{data:IND_RECONOCIMIENTO.map(d=>d.c),
+        backgroundColor:['#10b981','#ef4444'],
+        borderWidth:4,borderColor:'#0f172a',hoverBorderWidth:6,hoverBorderColor:'#fff'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:2000,easing:'easeOutElastic'},cutout:'70%',
+      plugins:{
+        legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:14,weight:'600'},padding:15}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return ((v/t)*100).toFixed(1)+'%'},color:'#fff',font:{weight:'bold',size:15}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  destroyChart('indPrevio');
+  const ctxP = document.getElementById('chartIndPrevio').getContext('2d');
+  charts['indPrevio'] = new Chart(ctxP,{
+    type:'pie',
+    data:{labels:IND_PREVIO.map(d=>d.t),datasets:[{data:IND_PREVIO.map(d=>d.c),backgroundColor:COLORES,borderWidth:2,borderColor:'#0f172a',hoverBorderWidth:4,hoverBorderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:2500,easing:'easeInOutExpo'},
+      plugins:{legend:{position:'right',labels:{color:'#e2e8f0',font:{size:11},padding:10}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return ((v/t)*100).toFixed(1)+'%'},color:'#fff',font:{weight:'bold',size:11}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Tabla indicadores
+  const tbody = document.getElementById('ind-tbody');
+  tbody.innerHTML = IND_MATRIZ.map(r=>`
+    <tr>
+      <td class="t-ref">${r.r}</td>
+      <td class="t-cliente">${r.c}</td>
+      <td class="t-aduana">${r.a}</td>
+      <td class="t-date">${r.f}</td>
+      <td>${r.op}</td>
+      <td class="${r.e==='ROJO'?'t-rojo':'t-verde'}"><i class="fas fa-circle" style="font-size:.7rem;margin-right:4px"></i>${r.e}</td>
+      <td class="t-previo">${r.p}</td>
+    </tr>`).join('');
+}
+
+function descargarCSV() {
+  let csv = 'Referencia,Cliente,Aduana,FechaEvento,Operacion,Estado,Previo\n';
+  IND_MATRIZ.forEach(r => {
+    csv += `"${r.r}","${r.c}","${r.a}","${r.f}","${r.op}","${r.e}","${r.p}"\n`;
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'indicadores_demo.csv';
+  link.click();
+}
+
+// ════════════════════════════════════════════════════════════
+//  INCIDENCIAS
+// ════════════════════════════════════════════════════════════
+function renderIncidencias() {
+  const cli = document.getElementById('inc-cliente').value;
+  const incTotal = cli ? (INC_REFS_BY_CLIENT[cli]?Math.round(INC_REFS_BY_CLIENT[cli]*0.15):15) : 186;
+  const refTotal = cli ? (INC_REFS_BY_CLIENT[cli]||300) : 1240;
+  const pct = ((incTotal/refTotal)*100).toFixed(2);
+
+  document.getElementById('inc-total-label').innerHTML = `<span class="num">${fmtNum(incTotal)}</span> incidencias${cli?' – '+cli:''}`;
+
+  const pctBox = document.getElementById('inc-pct-box');
+  if(cli && INC_REFS_BY_CLIENT[cli]) {
+    pctBox.innerHTML = `<div class="pct-box"><i class="fas fa-percentage" style="color:var(--accent)"></i>
+      <span>Incidencias: <strong>${incTotal}</strong> / ${fmtNum(refTotal)} referencias = <strong>${pct}%</strong> del total del cliente</span></div>`;
+  } else {
+    pctBox.innerHTML = `<div class="pct-box"><i class="fas fa-info-circle" style="color:var(--muted)"></i>
+      <span style="color:var(--muted)">Selecciona un cliente para ver el porcentaje vs referencias</span></div>`;
+  }
+
+  // Conceptos
+  destroyChart('incConc');
+  const ctxI = document.getElementById('chartIncConceptos').getContext('2d');
+  charts['incConc'] = new Chart(ctxI,{
+    type:'doughnut',
+    data:{labels:INC_CONCEPTOS.map(d=>d.t),datasets:[{data:INC_CONCEPTOS.map(d=>d.c),backgroundColor:COLORES,borderWidth:3,borderColor:'#0f172a',hoverBorderWidth:5,hoverBorderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:2000,easing:'easeOutElastic'},cutout:'60%',
+      plugins:{legend:{position:'right',labels:{color:'#e2e8f0',font:{size:11},padding:10}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#dc2626',bodyColor:'#e2e8f0',borderColor:'#b91c1c',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return ((v/t)*100).toFixed(1)+'%'},color:'#fff',font:{weight:'bold',size:11}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Clientes
+  destroyChart('incCli');
+  const ctxC = document.getElementById('chartIncClientes').getContext('2d');
+  charts['incCli'] = new Chart(ctxC,{
+    type:'bar',
+    data:{labels:INC_CLIENTES.map(d=>d.n),datasets:[{label:'Incidencias',data:INC_CLIENTES.map(d=>d.c),backgroundColor:COLORES,borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:1500,easing:'easeOutBounce'},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10}
+      },
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.08)'},ticks:{color:'#94a3b8'}},
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#94a3b8',font:{weight:'bold'},maxRotation:45,minRotation:45}}
+      }
+    }
+  });
+
+  // Donut comparativo
+  destroyChart('incVsRef');
+  const ctxV = document.getElementById('chartIncVsRef').getContext('2d');
+  const resto = Math.max(0, refTotal - incTotal);
+  charts['incVsRef'] = new Chart(ctxV,{
+    type:'doughnut',
+    data:{labels:['Incidencias','Resto de Referencias'],
+      datasets:[{data:[incTotal,resto],backgroundColor:['#ef4444','#10b981'],borderWidth:4,borderColor:'#0f172a',hoverBorderWidth:6,hoverBorderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:1800,easing:'easeOutElastic'},cutout:'60%',
+      plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',font:{size:12,weight:'600'},padding:12}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10,
+          callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return `${ctx.label}: ${ctx.parsed} (${t>0?((ctx.parsed/t)*100).toFixed(2):0}%)`}}
+        },
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?((v/t)*100).toFixed(1)+'%':''},color:'#fff',font:{weight:'bold',size:14}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Tabla
+  const filtered = cli ? INC_MATRIZ.filter(r=>r.c.toLowerCase().includes(cli.toLowerCase())) : INC_MATRIZ;
+  const tbody = document.getElementById('inc-tbody');
+  tbody.innerHTML = filtered.map(r=>`
+    <tr>
+      <td class="t-ref">${r.r}</td>
+      <td class="t-cliente">${r.c}</td>
+      <td style="color:var(--danger);font-style:italic">${r.t}</td>
+      <td class="t-date">${r.f}</td>
+    </tr>`).join('');
+  document.getElementById('inc-total-footer').innerHTML = `<i class="fas fa-calculator"></i> Total: ${filtered.length} registros de muestra`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  PROVEEDORES
+// ════════════════════════════════════════════════════════════
+function renderProveedores() {
+  // Previo
+  destroyChart('provPrevio');
+  const ctxP = document.getElementById('chartProvPrevio').getContext('2d');
+  charts['provPrevio'] = new Chart(ctxP,{
+    type:'doughnut',
+    data:{labels:IND_PREVIO.map(d=>d.t),datasets:[{data:IND_PREVIO.map(d=>d.c),backgroundColor:COLORES,borderWidth:2,borderColor:'#0f172a'}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:1800},cutout:'65%',
+      plugins:{legend:{position:'right',labels:{color:'#e2e8f0',font:{size:11},padding:10}},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return ((v/t)*100).toFixed(1)+'%'},color:'#fff',font:{weight:'bold'}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Top proveedores (horizontal bar)
+  const provRev = [...PROV_TOP].reverse();
+  destroyChart('topProv');
+  const ctxT = document.getElementById('chartTopProveedores').getContext('2d');
+  charts['topProv'] = new Chart(ctxT,{
+    type:'bar',
+    data:{labels:provRev.map(d=>d.n),datasets:[{label:'Facturas',data:provRev.map(d=>d.c),backgroundColor:COLORES.slice(0,10),borderRadius:6,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:1500,easing:'easeOutBounce'},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{anchor:'end',align:'right',color:'#cbd5e1',font:{weight:'bold'}}
+      },
+      scales:{
+        x:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.08)'},ticks:{color:'#94a3b8'}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#94a3b8'}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+
+  // Mes
+  destroyChart('provMes');
+  const ctxM = document.getElementById('chartProvMes').getContext('2d');
+  charts['provMes'] = new Chart(ctxM,{
+    type:'bar',
+    data:{labels:MESES,datasets:[{label:'Referencias',data:REFS_MES_BASE,backgroundColor:'rgba(34,211,238,0.7)',borderColor:'rgba(34,211,238,1)',borderWidth:2,borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:1200,easing:'easeOutBounce'},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(15,23,42,0.95)',titleColor:'#22d3ee',bodyColor:'#e2e8f0',borderColor:'#0e7490',borderWidth:1,padding:10},
+        datalabels:{anchor:'end',align:'top',color:'#cbd5e1',font:{weight:'bold'},formatter:v=>v>0?v:''}
+      },
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.08)'},ticks:{color:'#94a3b8'}},
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#94a3b8',font:{weight:'bold'}}}
+      }
+    },plugins:[ChartDataLabels]
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // Build año chips – referencias
+  buildAnioChips('ref-anios', refSelectedAnios, renderReferencias);
+  // Build año chips – indicadores
+  buildAnioChips('ind-anios', [2024], ()=>{});
+  // Build año chips – incidencias
+  buildAnioChips('inc-anios', [2024], ()=>{});
+
+  Chart.register(ChartDataLabels);
+  renderReferencias();
+});
+</script>
+</body>
+</html>
