@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DEMO – Soluciones del Pacífico – Consulta de Referencias</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+:root{
+  --navy:#1a2d4f;--navy-deep:#0f1e35;--blue:#2455a4;--blue-mid:#2e6bc4;--blue-light:#4a90d9;
+  --accent:#3b9ede;--white:#fff;--off:#f4f7fb;--border:#dce5f0;
+  --text:#1a2d4f;--soft:#5a6d87;--success:#1a9e6f;--demo:#e67e22;--radius:14px;
+  --shadow:0 4px 24px rgba(26,45,79,.13);--shadow-sm:0 2px 8px rgba(26,45,79,.09);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--navy-deep);display:flex;align-items:center;justify-content:center}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 15% 10%,rgba(36,85,164,.4) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 85% 90%,rgba(59,158,222,.22) 0%,transparent 55%);pointer-events:none}
+
+.shell{width:100%;max-width:760px;height:100vh;height:100dvh;display:flex;flex-direction:column;position:relative;z-index:1}
+
+/* Header */
+.chat-header{background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 100%);padding:14px 22px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;box-shadow:0 2px 20px rgba(0,0,0,.35)}
+.logo-wrap{width:48px;height:48px;background:linear-gradient(135deg,var(--blue),var(--blue-mid));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;font-weight:800;flex-shrink:0}
+.header-text{flex:1;min-width:0}
+.header-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-sub{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px}
+.demo-badge{display:flex;align-items:center;gap:6px;background:rgba(230,126,34,.18);border:1.5px solid rgba(230,126,34,.55);border-radius:20px;padding:4px 11px;font-size:.7rem;color:#f0a05a;font-weight:700;white-space:nowrap;flex-shrink:0;animation:demoPulse 2.5s infinite}
+@keyframes demoPulse{0%,100%{border-color:rgba(230,126,34,.55)}50%{border-color:rgba(230,126,34,1)}}
+.demo-dot{width:7px;height:7px;background:var(--demo);border-radius:50%}
+
+/* Banner DEMO */
+.demo-banner{background:linear-gradient(90deg,rgba(230,126,34,.15),rgba(230,126,34,.08));border-bottom:1px solid rgba(230,126,34,.25);padding:6px 20px;font-size:.73rem;color:#f0a05a;text-align:center;flex-shrink:0;letter-spacing:.2px}
+
+/* Messages */
+.chat-messages{flex:1;overflow-y:auto;padding:20px 18px;background:var(--off);display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;overscroll-behavior:contain}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+/* Rows */
+.message-row{display:flex;align-items:flex-end;gap:9px;max-width:90%;animation:fadeUp .22s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.bot-row{align-self:flex-start}
+.user-row{align-self:flex-end;flex-direction:row-reverse}
+
+/* Avatar */
+.avatar{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.avatar-bot{width:58px;height:58px;background:transparent}
+.avatar-bot lottie-player{width:100%;height:100%}
+.avatar-user{width:34px;height:34px;border-radius:50%;background:var(--navy);font-size:.75rem;font-weight:700;color:#fff;box-shadow:var(--shadow-sm)}
+
+/* Bubbles */
+.bubble{padding:10px 15px;border-radius:18px;font-size:.875rem;line-height:1.65;word-break:break-word;white-space:normal;box-shadow:var(--shadow-sm);max-width:100%}
+.bot-bubble{background:#fff;color:var(--text);border-bottom-left-radius:5px;border:1px solid var(--border)}
+.user-bubble{background:var(--navy);color:#fff;border-bottom-right-radius:5px}
+
+/* Typing indicator */
+.typing{display:flex;align-items:center;gap:5px;padding:12px 15px}
+.typing span{width:8px;height:8px;background:var(--soft);border-radius:50%;animation:bounce .8s infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Cards */
+.ref-card,.event-card{background:#f0f5ff;border:1.5px solid #c8d9f5;border-radius:11px;overflow:hidden;margin-top:2px}
+.ref-card-title,.event-card-title{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;padding:8px 13px;font-size:.8rem;font-weight:700;letter-spacing:.2px}
+.event-card{border-color:#bde0ff}
+.event-card-title{background:linear-gradient(135deg,#1a6eb0,#2e9fd4)}
+.ref-card-row{display:flex;padding:7px 13px;border-bottom:1px solid #dce9fb;font-size:.82rem}
+.ref-card-row:last-child{border-bottom:none}
+.ref-label{color:var(--soft);width:120px;flex-shrink:0;font-weight:500}
+.ref-value{color:var(--text);font-weight:600}
+.admin-badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:1px 8px;font-size:.68rem;margin-left:6px}
+
+/* Menu */
+.menu-card{background:#f8fbff;border:1.5px solid #c8d9f5;border-radius:11px;overflow:hidden}
+.menu-header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:9px 13px;font-size:.82rem;font-weight:600}
+.menu-list{padding:5px 7px}
+.menu-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .15s}
+.menu-item:hover{background:#eaf1fc}
+.menu-num{width:25px;height:25px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.menu-label{font-size:.85rem;color:var(--text);font-weight:500}
+.menu-hint{padding:7px 13px;font-size:.73rem;color:var(--soft);border-top:1px solid var(--border);background:#f0f5ff}
+
+/* Docs */
+.docs-wrap{font-size:.86rem}
+.docs-header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:9px 13px;border-radius:10px 10px 0 0;font-weight:600}
+.docs-empty{color:var(--soft);font-size:.86rem;padding:6px 0}
+.doc-group{border:1.5px solid var(--border);border-radius:9px;overflow:hidden;margin-top:7px}
+.doc-group-title{background:#eef3fb;padding:7px 11px;font-size:.78rem;font-weight:700;color:var(--blue);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.doc-count{background:var(--blue);color:#fff;border-radius:20px;padding:1px 7px;font-size:.66rem;margin-left:3px}
+.doc-item{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;gap:8px;border-bottom:1px solid #f0f4fb;flex-wrap:wrap}
+.doc-item:last-child{border-bottom:none}
+.doc-item:hover{background:#f8fbff}
+.doc-item-info{flex:1;min-width:0}
+.doc-name{display:block;font-weight:600;font-size:.8rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.doc-meta{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:.7rem;color:var(--soft)}
+.doc-ext{color:#fff;border-radius:3px;padding:1px 5px;font-size:.63rem;font-weight:700}
+.btn-dl{display:inline-flex;align-items:center;gap:3px;background:#aaa;color:#fff;border:none;border-radius:20px;padding:5px 12px;font-size:.74rem;font-weight:700;cursor:not-allowed;text-decoration:none;white-space:nowrap;flex-shrink:0;opacity:.75}
+.docs-back{margin-top:9px;padding:7px 11px;background:#f0f5ff;border-radius:8px;font-size:.76rem;color:var(--soft);border:1px solid var(--border)}
+
+/* Input */
+.chat-input-wrap{background:#fff;border-top:1px solid var(--border);padding:12px 15px;display:flex;gap:9px;align-items:center;flex-shrink:0;box-shadow:0 -2px 12px rgba(26,45,79,.07)}
+.chat-input-wrap input{flex:1;padding:11px 17px;border:1.5px solid var(--border);border-radius:25px;font-size:.9rem;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--off);outline:none;transition:border-color .2s,box-shadow .2s;min-width:0}
+.chat-input-wrap input:focus{border-color:var(--blue-mid);background:#fff;box-shadow:0 0 0 3px rgba(46,107,196,.1)}
+.btn-send{width:44px;height:44px;background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(36,85,164,.38);transition:transform .15s,opacity .15s;font-size:1rem}
+.btn-send:hover{transform:scale(1.07)}
+.btn-send:active{transform:scale(.94)}
+
+/* Footer */
+.chat-footer{background:#fff;border-top:1px solid var(--border);display:flex;justify-content:center;gap:10px;padding:7px 14px;flex-shrink:0}
+.footer-link{font-size:.7rem;color:var(--soft);text-decoration:none;padding:4px 12px;border-radius:20px;border:1px solid var(--border);transition:background .15s;cursor:pointer;background:none;font-family:'DM Sans',sans-serif}
+.footer-link:hover{background:var(--off);color:var(--blue)}
+
+@media(max-width:600px){
+  .shell{border-radius:0}
+  .chat-header{padding:11px 14px;gap:10px}
+  .header-title{font-size:1rem}
+  .demo-badge{padding:3px 9px;font-size:.66rem}
+  .chat-messages{padding:14px 11px;gap:11px}
+  .message-row{max-width:97%}
+  .bubble{font-size:.84rem;padding:9px 12px}
+  .ref-label{width:100px;font-size:.78rem}
+  .ref-value{font-size:.78rem}
+  .doc-name{max-width:180px}
+  .menu-label{font-size:.81rem}
+  .chat-input-wrap{padding:9px 11px;gap:7px}
+  .chat-input-wrap input{padding:10px 13px;font-size:.86rem}
+  .btn-send{width:40px;height:40px;font-size:.9rem}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <div class="chat-header">
+    <div class="logo-wrap">SP</div>
+    <div class="header-text">
+      <div class="header-title">DEMO – Consulta de Referencias</div>
+      <div class="header-sub">Sistema de seguimiento aduanal · Soluciones del Pacífico</div>
+    </div>
+    <div class="demo-badge"><span class="demo-dot"></span>DEMO</div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="demo-banner">
+    ⚠️ <strong>MODO DEMO</strong> — Sin conexión a BD. Usuario: <strong>demo</strong> · Contraseña: <strong>demo1234</strong>
+    &nbsp;|&nbsp; Referencias: PRUEBA-001 al PRUEBA-005
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <!-- INPUT -->
+  <div class="chat-input-wrap">
+    <input type="text" id="userInput" placeholder="Ingresa tu usuario..." autocomplete="off" autofocus>
+    <button class="btn-send" id="sendBtn" onclick="handleSend()">➤</button>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="chat-footer">
+    <button class="footer-link" onclick="resetChat()">🔄 Reiniciar</button>
+    <span class="footer-link">🧪 Modo Demo</span>
+    <span class="footer-link">🔒 Sin datos reales</span>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  DATOS DEMO
+// ════════════════════════════════════════════════════════════
+const USUARIOS = {
+  'demo': { nombre: 'Usuario Demo Soluciones del Pacífico', password: 'demo1234', es_admin: true, id_cliente: 1 }
+};
+
+const REFERENCIAS = {
+  'PRUEBA-001': {
+    NumeroDeReferencia: 'PRUEBA-001', FechaApertura: '2024-11-05',
+    nombre_cliente: 'Importaciones del Pacífico S.A. de C.V.',
+    ultimo_evento: { Tipo: 'IMPORTACIÓN', Descripcion: 'Pedimento pagado y liberado en aduana', FechaHora: '18/11/2024 14:32' },
+    fechas: { 3:'08/11/2024 09:00', 6:'10/11/2024 11:45', 10:'12/11/2024 16:20', 15:'13/11/2024 10:10', 29:'15/11/2024 13:55', 32:'16/11/2024 08:30', 49:'18/11/2024 17:00' },
+    documentos: [
+      {nombre:'Pedimento_PRUEBA001.pdf',ext:'PDF',tam:'245 KB'},
+      {nombre:'Factura_Proveedor_001.pdf',ext:'PDF',tam:'180 KB'},
+      {nombre:'ListaEmpaque_001.xlsx',ext:'XLSX',tam:'98 KB'},
+      {nombre:'BL_Revalidado_001.pdf',ext:'PDF',tam:'320 KB'},
+    ]
+  },
+  'PRUEBA-002': {
+    NumeroDeReferencia: 'PRUEBA-002', FechaApertura: '2024-11-20',
+    nombre_cliente: 'Exportaciones del Norte S.A. de C.V.',
+    ultimo_evento: { Tipo: 'IMPORTACIÓN', Descripcion: 'Mercancía en proceso de previo físico', FechaHora: '25/11/2024 09:15' },
+    fechas: { 3:'22/11/2024 07:30', 6:'23/11/2024 14:00', 10:'Pendiente', 15:'25/11/2024 09:15', 29:'Pendiente', 32:'Pendiente', 49:'Pendiente' },
+    documentos: [
+      {nombre:'Pedimento_PRUEBA002_borrador.pdf',ext:'PDF',tam:'210 KB'},
+      {nombre:'Factura_Proveedor_002.pdf',ext:'PDF',tam:'155 KB'},
+      {nombre:'CertificadoOrigen_002.pdf',ext:'PDF',tam:'88 KB'},
+    ]
+  },
+  'PRUEBA-003': {
+    NumeroDeReferencia: 'PRUEBA-003', FechaApertura: '2024-10-01',
+    nombre_cliente: 'Comercializadora del Golfo S.A. de C.V.',
+    ultimo_evento: { Tipo: 'EXPORTACIÓN', Descripcion: 'Mercancía despachada y entregada al cliente', FechaHora: '22/10/2024 16:45' },
+    fechas: { 3:'05/10/2024 10:00', 6:'07/10/2024 08:20', 10:'09/10/2024 15:00', 15:'11/10/2024 11:30', 29:'15/10/2024 09:45', 32:'18/10/2024 07:00', 49:'22/10/2024 16:45' },
+    documentos: [
+      {nombre:'Pedimento_EXP_PRUEBA003.pdf',ext:'PDF',tam:'278 KB'},
+      {nombre:'Factura_Exportacion_003.pdf',ext:'PDF',tam:'200 KB'},
+      {nombre:'ListaEmpaque_EXP_003.xlsx',ext:'XLSX',tam:'74 KB'},
+      {nombre:'ManifestacionValor_003.pdf',ext:'PDF',tam:'130 KB'},
+      {nombre:'PermisoSEMARNAT_003.pdf',ext:'PDF',tam:'95 KB'},
+    ]
+  },
+  'PRUEBA-004': {
+    NumeroDeReferencia: 'PRUEBA-004', FechaApertura: '2024-12-01',
+    nombre_cliente: 'Distribuidora Centro S.A. de C.V.',
+    ultimo_evento: { Tipo: 'IMPORTACIÓN', Descripcion: 'ETA confirmada, en espera de arribo del buque', FechaHora: '02/12/2024 10:00' },
+    fechas: { 3:'05/12/2024 06:00', 6:'Pendiente', 10:'Pendiente', 15:'Pendiente', 29:'Pendiente', 32:'Pendiente', 49:'Pendiente' },
+    documentos: [
+      {nombre:'BL_Original_PRUEBA004.pdf',ext:'PDF',tam:'340 KB'},
+      {nombre:'Proforma_PRUEBA004.pdf',ext:'PDF',tam:'112 KB'},
+    ]
+  },
+  'PRUEBA-005': {
+    NumeroDeReferencia: 'PRUEBA-005', FechaApertura: '2024-09-10',
+    nombre_cliente: 'Grupo Manufacturero Bajío S.A. de C.V.',
+    ultimo_evento: { Tipo: 'IMPORTACIÓN', Descripcion: 'Factura entregada al cliente, expediente cerrado', FechaHora: '30/09/2024 12:00' },
+    fechas: { 3:'12/09/2024 07:15', 6:'14/09/2024 10:30', 10:'16/09/2024 14:00', 15:'18/09/2024 09:00', 29:'22/09/2024 11:20', 32:'25/09/2024 08:45', 49:'30/09/2024 12:00' },
+    documentos: [
+      {nombre:'Pedimento_PRUEBA005_final.pdf',ext:'PDF',tam:'260 KB'},
+      {nombre:'Factura_005.pdf',ext:'PDF',tam:'175 KB'},
+      {nombre:'CertAnalisis_005.pdf',ext:'PDF',tam:'90 KB'},
+      {nombre:'ReportePrevio_005.pdf',ext:'PDF',tam:'145 KB'},
+      {nombre:'DODA_005.xml',ext:'XML',tam:'22 KB'},
+      {nombre:'Fotos_Inspeccion_005.zip',ext:'ZIP',tam:'4.2 MB'},
+    ]
+  }
+};
+
+const MENU_OPCIONES = [
+  { n:1, nombre:'📅 Fecha de Arriba (ETA)',        id:3  },
+  { n:2, nombre:'🚢 Llegada de la mercancía',       id:6  },
+  { n:3, nombre:'📋 Revalidación',                  id:10 },
+  { n:4, nombre:'🔍 Fecha de Previo',               id:15 },
+  { n:5, nombre:'📜 Pedimento Pagado',              id:29 },
+  { n:6, nombre:'🚚 Despacho',                      id:32 },
+  { n:7, nombre:'🧾 Entrega de factura a cliente',  id:49 },
+  { n:8, nombre:'📁 Ver / Descargar Documentos',    id:null },
+  { n:9, nombre:'🔄 Validar otra referencia',       id:null },
+  { n:10, nombre:'🚪 Salir',                        id:null },
+];
+
+const EXT_COLORS = {PDF:'#e74c3c',XLSX:'#27ae60',XLS:'#27ae60',DOCX:'#2980b9',DOC:'#2980b9',JPG:'#e67e22',JPEG:'#e67e22',PNG:'#e67e22',ZIP:'#8e44ad',XML:'#16a085',TXT:'#7f8c8d'};
+
+// ════════════════════════════════════════════════════════════
+//  ESTADO
+// ════════════════════════════════════════════════════════════
+let estado = 'esperando_usuario';
+let usuarioActual = null;
+let referenciaActual = null;
+
+// ════════════════════════════════════════════════════════════
+//  HELPERS HTML
+// ════════════════════════════════════════════════════════════
+function buildMenu(ref) {
+  const items = MENU_OPCIONES.map(o =>
+    `<div class="menu-item" onclick="clickMenu(${o.n})">
+      <span class="menu-num">${o.n}</span>
+      <span class="menu-label">${o.nombre}</span>
+    </div>`).join('');
+  return `<div class="menu-card">
+    <div class="menu-header">¿Qué deseas consultar para <strong>${ref}</strong>?</div>
+    <div class="menu-list">${items}</div>
+    <div class="menu-hint">Escribe el número de opción (1–10) o toca la opción</div>
+  </div>`;
+}
+
+function buildRefCard(ref) {
+  return `<div class="ref-card">
+    <div class="ref-card-title">✅ Referencia verificada <span class="admin-badge">👑 Admin</span></div>
+    <div class="ref-card-row"><span class="ref-label">Número</span><span class="ref-value">${ref.NumeroDeReferencia}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Fecha apertura</span><span class="ref-value">${ref.FechaApertura}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Cliente</span><span class="ref-value">${ref.nombre_cliente}</span></div>
+  </div>`;
+}
+
+function buildEventCard(ev) {
+  return `<div class="event-card">
+    <div class="event-card-title">🕐 Último evento registrado</div>
+    <div class="ref-card-row"><span class="ref-label">Tipo</span><span class="ref-value">${ev.Tipo}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Fecha y hora</span><span class="ref-value">${ev.FechaHora}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Descripción</span><span class="ref-value">${ev.Descripcion}</span></div>
+  </div>`;
+}
+
+function buildEventoItem(op, fecha, tipo, cliente) {
+  return `<div class="event-card">
+    <div class="event-card-title">${op.nombre}</div>
+    <div class="ref-card-row"><span class="ref-label">Cliente</span><span class="ref-value">${cliente}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Tipo</span><span class="ref-value">${tipo}</span></div>
+    <div class="ref-card-row"><span class="ref-label">Fecha y hora</span><span class="ref-value"><strong>${fecha}</strong></span></div>
+  </div>`;
+}
+
+function buildDocs(docs) {
+  if(!docs || docs.length===0) return `<div class="docs-empty">📂 No se encontraron documentos para esta referencia.</div>`;
+  const items = docs.map(d => {
+    const col = EXT_COLORS[d.ext] || '#7f8c8d';
+    return `<div class="doc-item">
+      <div class="doc-item-info">
+        <span class="doc-name">${d.nombre}</span>
+        <span class="doc-meta">
+          <span class="doc-ext" style="background:${col}">${d.ext}</span>
+          <span>📦 ${d.tam}</span>
+        </span>
+      </div>
+      <button class="btn-dl" onclick="alert('⚠️ Descarga no disponible en modo DEMO.')">⬇️ Descargar</button>
+    </div>`;
+  }).join('');
+  return `<div class="docs-wrap">
+    <div class="docs-header">📁 <strong>${docs.length} documento(s)</strong> encontrado(s)</div>
+    <div class="doc-group">
+      <div class="doc-group-title">🗄️ Expediente aduanal (CASAWIN) <span class="doc-count">${docs.length}</span></div>
+      ${items}
+    </div>
+    <div class="docs-back">Escribe <strong>0</strong> para volver al menú principal</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  CHAT ENGINE
+// ════════════════════════════════════════════════════════════
+function addMessage(html, isBot) {
+  const row = document.createElement('div');
+  row.className = 'message-row ' + (isBot ? 'bot-row' : 'user-row');
+
+  if(isBot) {
+    const av = document.createElement('div');
+    av.className = 'avatar avatar-bot';
+    av.innerHTML = `<lottie-player src="https://assets3.lottiefiles.com/packages/lf20_jtbfg2nb.json" background="transparent" speed="1" loop autoplay></lottie-player>`;
+    row.appendChild(av);
+  } else {
+    const av = document.createElement('div');
+    av.className = 'avatar avatar-user';
+    av.textContent = usuarioActual ? usuarioActual.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '👤';
+    row.appendChild(av);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + (isBot ? 'bot-bubble' : 'user-bubble');
+  bubble.innerHTML = html;
+  row.appendChild(bubble);
+
+  document.getElementById('chatMessages').appendChild(row);
+  scrollBottom();
+  return bubble;
+}
+
+function showTyping() {
+  const row = document.createElement('div');
+  row.className = 'message-row bot-row';
+  row.id = 'typing-row';
+
+  const av = document.createElement('div');
+  av.className = 'avatar avatar-bot';
+  av.innerHTML = `<lottie-player src="https://assets3.lottiefiles.com/packages/lf20_jtbfg2nb.json" background="transparent" speed="1" loop autoplay></lottie-player>`;
+  row.appendChild(av);
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble bot-bubble';
+  bubble.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+  row.appendChild(bubble);
+  document.getElementById('chatMessages').appendChild(row);
+  scrollBottom();
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-row');
+  if(el) el.remove();
+}
+
+function botSay(html, delay=600) {
+  showTyping();
+  return new Promise(res => setTimeout(() => {
+    hideTyping();
+    addMessage(html, true);
+    res();
+  }, delay));
+}
+
+function scrollBottom() {
+  const cm = document.getElementById('chatMessages');
+  cm.scrollTop = cm.scrollHeight;
+}
+
+function setPlaceholder(text) {
+  document.getElementById('userInput').placeholder = text;
+}
+
+function setInputType(type) {
+  const input = document.getElementById('userInput');
+  input.type = type;
+  input.value = '';
+}
+
+// ════════════════════════════════════════════════════════════
+//  PROCESAMIENTO DE MENSAJES
+// ════════════════════════════════════════════════════════════
+async function handleSend() {
+  const input = document.getElementById('userInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+
+  // Mostrar burbuja usuario
+  const displayMsg = estado === 'esperando_password'
+    ? '•'.repeat(Math.min(12, msg.length + Math.floor(Math.random()*3)))
+    : msg;
+  addMessage(displayMsg, false);
+  input.value = '';
+
+  await processMessage(msg);
+}
+
+async function processMessage(msg) {
+  if(estado === 'esperando_usuario') {
+    const user = USUARIOS[msg.toLowerCase()];
+    if(user) {
+      estado = 'esperando_password';
+      setInputType('password');
+      setPlaceholder('Ingresa tu contraseña...');
+      await botSay('🔐 Usuario verificado. Ingresa tu <strong>contraseña</strong>.');
+    } else {
+      await botSay(`❌ Usuario no encontrado o cuenta desactivada.<br><small style="color:#e67e22">💡 Usa: <strong>demo</strong></small>`);
+    }
+    return;
+  }
+
+  if(estado === 'esperando_password') {
+    const user = USUARIOS['demo'];
+    if(msg === user.password) {
+      usuarioActual = user;
+      estado = 'esperando_referencia';
+      setInputType('text');
+      setPlaceholder('Ej: PRUEBA-001');
+      await botSay(`✅ ¡Bienvenido, <strong>${user.nombre}</strong>!<br><br>📊 Ingresa el <strong>número de referencia</strong> que deseas consultar.<br><small style="color:#888">Disponibles: PRUEBA-001 al PRUEBA-005</small>`);
+    } else {
+      await botSay(`❌ Contraseña incorrecta. Intenta de nuevo.<br><small style="color:#e67e22">💡 Usa: <strong>demo1234</strong></small>`);
+    }
+    return;
+  }
+
+  if(estado === 'esperando_referencia') {
+    const key = msg.toUpperCase().trim();
+    const ref = REFERENCIAS[key];
+    if(!ref) {
+      await botSay(`❌ <strong>Referencia no encontrada.</strong><br><small>Disponibles: PRUEBA-001, PRUEBA-002, PRUEBA-003, PRUEBA-004, PRUEBA-005</small>`);
+      return;
+    }
+    referenciaActual = ref;
+    estado = 'menu_eventos';
+    setPlaceholder('Escribe el número de opción (1-10)...');
+
+    await botSay(buildRefCard(ref), 500);
+    await botSay(buildEventCard(ref.ultimo_evento), 700);
+    await botSay(buildMenu(ref.NumeroDeReferencia), 700);
+    return;
+  }
+
+  if(estado === 'menu_eventos') {
+    const op = parseInt(msg.trim());
+
+    if(op === 10) {
+      estado = 'esperando_usuario';
+      usuarioActual = null;
+      referenciaActual = null;
+      setInputType('text');
+      setPlaceholder('Ingresa tu usuario...');
+      await botSay(`👋 ¡Hasta luego! Gracias por usar Soluciones del Pacífico.`);
+      return;
+    }
+
+    if(op === 9) {
+      referenciaActual = null;
+      estado = 'esperando_referencia';
+      setPlaceholder('Ej: PRUEBA-001');
+      await botSay(`📊 Ingresa el <strong>número de referencia</strong> que deseas consultar.<br><small style="color:#888">Disponibles: PRUEBA-001 al PRUEBA-005</small>`);
+      return;
+    }
+
+    if(op === 8) {
+      estado = 'viendo_documentos';
+      setPlaceholder('Escribe 0 para volver...');
+      await botSay(buildDocs(referenciaActual.documentos), 500);
+      return;
+    }
+
+    const menuOp = MENU_OPCIONES.find(o => o.n === op && op >= 1 && op <= 7);
+    if(menuOp) {
+      const fecha = referenciaActual.fechas[menuOp.id] || 'Pendiente';
+      await botSay(buildEventoItem(menuOp, fecha, referenciaActual.ultimo_evento.Tipo, referenciaActual.nombre_cliente), 400);
+      await botSay(buildMenu(referenciaActual.NumeroDeReferencia), 600);
+      return;
+    }
+
+    await botSay(`❌ Opción inválida. Escribe un número del <strong>1 al 10</strong>.`);
+    await botSay(buildMenu(referenciaActual.NumeroDeReferencia), 400);
+    return;
+  }
+
+  if(estado === 'viendo_documentos') {
+    if(msg.trim() === '0') {
+      estado = 'menu_eventos';
+      setPlaceholder('Escribe el número de opción (1-10)...');
+      await botSay(buildMenu(referenciaActual.NumeroDeReferencia), 300);
+    } else {
+      await botSay('↩️ Escribe <strong>0</strong> para volver al menú.<br><small>Las descargas no están disponibles en modo DEMO.</small>');
+    }
+    return;
+  }
+}
+
+// Click en opción del menú
+function clickMenu(n) {
+  const input = document.getElementById('userInput');
+  input.value = String(n);
+  handleSend();
+}
+
+// Reset
+function resetChat() {
+  document.getElementById('chatMessages').innerHTML = '';
+  estado = 'esperando_usuario';
+  usuarioActual = null;
+  referenciaActual = null;
+  setInputType('text');
+  setPlaceholder('Ingresa tu usuario...');
+  init();
+}
+
+// Enter key
+document.getElementById('userInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') handleSend();
+});
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+async function init() {
+  await botSay(
+    `👋 ¡Bienvenido al sistema <strong>DEMO</strong> de <strong>Soluciones del Pacífico</strong>!<br>
+     Por favor ingresa tu <strong>usuario</strong> para comenzar.<br>
+     <small style="color:#e67e22">⚠️ Modo demostración – datos ficticios</small>`,
+    400
+  );
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
