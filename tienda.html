@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Humo Fino — Cigarros Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0a07;
+    --bg2: #181210;
+    --bg3: #221a13;
+    --gold: #c9973a;
+    --gold2: #e8b84b;
+    --cream: #f5ead8;
+    --smoke: #8a7a6a;
+    --red: #8b1a1a;
+    --text: #e8ddd0;
+    --border: #3a2e22;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: linear-gradient(180deg, rgba(13,10,7,0.98) 0%, rgba(13,10,7,0.92) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .logo span { color: var(--cream); font-weight: 400; font-style: italic; }
+  .logo-icon { font-size: 1.4rem; }
+  .cart-btn {
+    position: relative;
+    background: var(--bg3);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .cart-btn:hover { background: var(--gold); color: var(--bg); }
+  .cart-badge {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--red);
+    color: white;
+    border-radius: 50%; width: 20px; height: 20px;
+    font-size: 0.7rem;
+    display: flex; align-items: center; justify-content: center;
+    display: none;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(201,151,58,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--cream);
+    margin-bottom: 1rem;
+  }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p {
+    color: var(--smoke);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* SEARCH / FILTER */
+  .filters {
+    padding: 2rem;
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--smoke);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,151,58,0.08);
+  }
+  .search-wrap {
+    position: relative;
+  }
+  .search-wrap input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.45rem 1rem 0.45rem 2rem;
+    outline: none;
+    letter-spacing: 0.05em;
+    width: 200px;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap::before {
+    content: '⌕';
+    position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%);
+    color: var(--smoke); font-size: 1rem;
+  }
+
+  /* GRID */
+  .catalog {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    position: relative;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    cursor: default;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,151,58,0.5);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+  .card-img {
+    width: 100%; height: 200px;
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    position: absolute; inset: 0;
+  }
+  .card-img .fallback { position: relative; z-index: 1; }
+  .stock-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--border);
+  }
+  .stock-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    transition: width 0.5s;
+  }
+  .out-of-stock-overlay {
+    display: none;
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--smoke);
+    letter-spacing: 0.1em;
+    z-index: 2;
+  }
+  .card.out .out-of-stock-overlay { display: flex; }
+  .card-body { padding: 1.2rem; }
+  .card-cat {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+  .card-desc {
+    font-size: 0.75rem;
+    color: var(--smoke);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    min-height: 2.4em;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-price {
+    font-size: 1.2rem;
+    color: var(--gold2);
+    font-weight: 500;
+  }
+  .card-price span { font-size: 0.7rem; color: var(--smoke); }
+  .stock-info {
+    font-size: 0.65rem;
+    color: var(--smoke);
+    letter-spacing: 0.05em;
+  }
+  .stock-info.low { color: #d97706; }
+  .qty-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .qty-btn {
+    width: 28px; height: 28px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-family: monospace;
+  }
+  .qty-btn:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  .qty-num {
+    font-size: 0.9rem;
+    color: var(--cream);
+    min-width: 24px;
+    text-align: center;
+  }
+  .add-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .add-btn:hover:not(:disabled) { background: var(--gold); color: var(--bg); }
+  .add-btn:disabled { opacity: 0.35; cursor: not-allowed; border-color: var(--smoke); color: var(--smoke); }
+  .added-flash {
+    color: #4ade80;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* CART DRAWER */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(480px, 100vw);
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .drawer-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+  }
+  .close-btn {
+    background: none; border: none;
+    color: var(--smoke);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .close-btn:hover { color: var(--cream); }
+  .drawer-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+  .drawer-items::-webkit-scrollbar { width: 4px; }
+  .drawer-items::-webkit-scrollbar-track { background: var(--bg3); }
+  .drawer-items::-webkit-scrollbar-thumb { background: var(--border); }
+  .cart-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ci-icon { font-size: 2rem; flex-shrink: 0; width: 48px; text-align: center; }
+  .ci-info { flex: 1; }
+  .ci-name { font-size: 0.85rem; color: var(--cream); margin-bottom: 0.2rem; font-family: 'Playfair Display', serif; }
+  .ci-price { font-size: 0.75rem; color: var(--gold); }
+  .ci-controls { display: flex; align-items: center; gap: 0.4rem; }
+  .ci-remove { background: none; border: none; color: var(--smoke); cursor: pointer; font-size: 1rem; transition: color 0.2s; }
+  .ci-remove:hover { color: #ef4444; }
+  .drawer-footer {
+    padding: 1.2rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem;
+  }
+  .total-label { font-size: 0.75rem; color: var(--smoke); letter-spacing: 0.1em; text-transform: uppercase; }
+  .total-amount { font-size: 1.5rem; color: var(--gold2); font-family: 'Playfair Display', serif; }
+  .whatsapp-field {
+    margin-bottom: 1rem;
+  }
+  .whatsapp-field label { font-size: 0.7rem; color: var(--smoke); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.4rem; }
+  .whatsapp-field input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+    outline: none;
+  }
+  .whatsapp-field input:focus { border-color: var(--gold); }
+  .send-btn {
+    width: 100%;
+    background: #25D366;
+    border: none;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.9rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .send-btn:hover { background: #128C7E; }
+  .send-btn:disabled { background: var(--smoke); cursor: not-allowed; }
+  .cart-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--smoke);
+  }
+  .cart-empty .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .cart-empty p { font-size: 0.8rem; letter-spacing: 0.05em; }
+
+  /* NOTES FIELD */
+  .notes-field { margin-bottom: 1rem; }
+  .notes-field label { font-size: 0.7rem; color: var(--smoke); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.4rem; }
+  .notes-field input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    outline: none;
+  }
+  .notes-field input:focus { border-color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--smoke);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .no-results {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem;
+    color: var(--smoke);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🚬</span>
+    El Humo <span>Fino</span>
+  </div>
+  <button class="cart-btn" onclick="toggleCart()">
+    🛒 Carrito
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <p class="hero-tag">✦ Distribución Premium ✦</p>
+  <h1>El sabor que<br><em>siempre buscabas</em></h1>
+  <p>Selecciona tus productos, agrega al carrito y recibe tu pedido directo en tu puerta.</p>
+</section>
+
+<div class="filters">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Buscar marca..." oninput="filterProducts()">
+  </div>
+  <button class="filter-btn active" onclick="setFilter('todos', this)">Todos</button>
+  <button class="filter-btn" onclick="setFilter('americanos', this)">Americanos</button>
+  <button class="filter-btn" onclick="setFilter('mentol', this)">Mentol</button>
+  <button class="filter-btn" onclick="setFilter('nacionales', this)">Nacionales</button>
+  <button class="filter-btn" onclick="setFilter('light', this)">Light</button>
+</div>
+
+<div class="catalog" id="catalog"></div>
+
+<!-- CART OVERLAY -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>Mi Pedido</h2>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-footer">
+    <div class="total-row">
+      <span class="total-label">Total estimado</span>
+      <span class="total-amount" id="totalAmount">$0.00</span>
+    </div>
+    <div class="notes-field">
+      <label>Nombre / Referencia</label>
+      <input type="text" id="customerName" placeholder="Tu nombre o dirección...">
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendToWhatsApp()" disabled>
+      📱 Enviar Pedido por WhatsApp
+    </button>
+  </div>
+</div>
+
+<footer>
+  <p>El Humo Fino — Ventas al mayoreo y menudeo</p>
+  <p style="margin-top:0.5rem"><a href="admin.html">Panel Admin</a></p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+//  CATÁLOGO — se carga desde catalogo.txt
+// ═══════════════════════════════════════
+let products = [];
+let cart = {};
+let currentFilter = 'todos';
+
+async function loadCatalog() {
+  try {
+    const resp = await fetch('catalogo.txt?t=' + Date.now());
+    if (!resp.ok) throw new Error('no txt');
+    const text = await resp.text();
+    products = parseCatalog(text);
+  } catch (e) {
+    // Datos de ejemplo si no hay archivo
+    products = getDefaultProducts();
+  }
+  renderCatalog();
+}
+
+function parseCatalog(text) {
+  const lines = text.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+  const prods = [];
+  for (const line of lines) {
+    // Formato: id|nombre|precio|stock|categoria|descripcion|imagen
+    const parts = line.split('|');
+    if (parts.length < 6) continue;
+    prods.push({
+      id: parts[0].trim(),
+      name: parts[1].trim(),
+      price: parseFloat(parts[2]),
+      stock: parseInt(parts[3]),
+      category: parts[4].trim().toLowerCase(),
+      desc: parts[5].trim(),
+      img: parts[6] ? parts[6].trim() : '',
+      icon: parts[7] ? parts[7].trim() : '🚬'
+    });
+  }
+  return prods;
+}
+
+function getDefaultProducts() {
+  return [
+    { id:'marlboro-red', name:'Marlboro Red', price:85, stock:50, category:'americanos', desc:'El clásico de todos los tiempos. Sabor intenso y humo denso.', img:'', icon:'🔴' },
+    { id:'marlboro-gold', name:'Marlboro Gold', price:85, stock:30, category:'light', desc:'Suave y equilibrado. La elección premium de muchos fumadores.', img:'', icon:'🟡' },
+    { id:'camel', name:'Camel Filters', price:80, stock:40, category:'americanos', desc:'Mezcla turca y doméstica. Sabor único e inconfundible.', img:'', icon:'🐪' },
+    { id:'winston', name:'Winston Red', price:75, stock:25, category:'americanos', desc:'Sin aditivos, sabor puro de tabaco natural americano.', img:'', icon:'🚬' },
+    { id:'delicados', name:'Delicados', price:35, stock:60, category:'nacionales', desc:'El cigarro nacional más vendido de México. Sabor auténtico.', img:'', icon:'🇲🇽' },
+    { id:'faros', name:'Faros', price:30, stock:80, category:'nacionales', desc:'Tradición mexicana en cada fumada. El preferido del pueblo.', img:'', icon:'🏮' },
+    { id:'marlboro-menthol', name:'Marlboro Mentol', price:87, stock:20, category:'mentol', desc:'Fresco y suave. La sensación mentolada más buscada.', img:'', icon:'🍃' },
+    { id:'camel-menthol', name:'Camel Mentol', price:82, stock:0, category:'mentol', desc:'Frescura camel con el toque inconfundible de la marca.', img:'', icon:'💚' },
+    { id:'benson', name:'Benson & Hedges', price:95, stock:15, category:'light', desc:'La elegancia británica en un cigarro dorado.', img:'', icon:'✨' },
+    { id:'montana', name:'Monterrey', price:45, stock:35, category:'nacionales', desc:'Sabor mexicano del noreste. Robusto y económico.', img:'', icon:'⛰️' },
+  ];
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCatalog();
+}
+
+function filterProducts() {
+  renderCatalog();
+}
+
+function renderCatalog() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const catalog = document.getElementById('catalog');
+  let filtered = products.filter(p => {
+    const matchCat = currentFilter === 'todos' || p.category === currentFilter;
+    const matchSearch = p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+
+  if (!filtered.length) {
+    catalog.innerHTML = '<div class="no-results">No se encontraron productos</div>';
+    return;
+  }
+
+  catalog.innerHTML = filtered.map(p => {
+    const inCart = cart[p.id] || 0;
+    const stockPct = p.stock > 0 ? Math.min(100, (p.stock / 100) * 100) : 0;
+    const isOut = p.stock === 0;
+    const isLow = p.stock > 0 && p.stock < 10;
+    return `
+    <div class="card ${isOut ? 'out' : ''}" id="card-${p.id}">
+      <div class="card-img">
+        ${p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
+        <span class="fallback">${p.icon}</span>
+        <div class="out-of-stock-overlay">Sin Stock</div>
+        <div class="stock-bar"><div class="stock-fill" style="width:${stockPct}%"></div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${p.category}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-footer">
+          <div class="card-price">$${p.price.toFixed(2)} <span>/ caja</span></div>
+          <div class="stock-info ${isLow ? 'low' : ''}">${isOut ? 'Agotado' : isLow ? `⚠ Solo ${p.stock}` : `Stock: ${p.stock}`}</div>
+        </div>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="changeQty('${p.id}', -1)" ${isOut ? 'disabled' : ''}>−</button>
+          <span class="qty-num" id="qty-${p.id}">${inCart}</span>
+          <button class="qty-btn" onclick="changeQty('${p.id}', 1)" ${isOut ? 'disabled' : ''}>+</button>
+          <button class="add-btn" onclick="addToCart('${p.id}')" ${isOut ? 'disabled' : ''}>
+            ${inCart > 0 ? '✓ Agregar más' : '+ Agregar'}
+          </button>
+          <span class="added-flash" id="flash-${p.id}">¡Listo!</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════
+//  QTY & CART
+// ═══════════════════
+const qtySelect = {};
+
+function changeQty(id, delta) {
+  qtySelect[id] = Math.max(1, (qtySelect[id] || 1) + delta);
+  const el = document.getElementById('qty-' + id);
+  if (el) el.textContent = qtySelect[id];
+}
+
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  if (!p || p.stock === 0) return;
+  const qty = qtySelect[id] || 1;
+  if ((cart[id] || 0) + qty > p.stock) {
+    alert(`Solo hay ${p.stock} en stock. Ya tienes ${cart[id]||0} en el carrito.`);
+    return;
+  }
+  cart[id] = (cart[id] || 0) + qty;
+  qtySelect[id] = 1;
+  const el = document.getElementById('qty-' + id);
+  if (el) el.textContent = 1;
+
+  // Flash
+  const flash = document.getElementById('flash-' + id);
+  if (flash) {
+    flash.style.opacity = '1';
+    setTimeout(() => flash.style.opacity = '0', 1200);
+  }
+  updateCartUI();
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  updateCartUI();
+}
+
+function changeCartQty(id, delta) {
+  const p = products.find(x => x.id === id);
+  cart[id] = Math.max(0, (cart[id] || 0) + delta);
+  if (cart[id] === 0) delete cart[id];
+  else if (cart[id] > p.stock) cart[id] = p.stock;
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const items = Object.entries(cart);
+  const badge = document.getElementById('cartBadge');
+  const total_count = items.reduce((s, [,q]) => s + q, 0);
+  badge.textContent = total_count;
+  badge.style.display = total_count > 0 ? 'flex' : 'none';
+
+  const drawerItems = document.getElementById('drawerItems');
+  const sendBtn = document.getElementById('sendBtn');
+  const totalAmount = document.getElementById('totalAmount');
+
+  if (!items.length) {
+    drawerItems.innerHTML = `
+      <div class="cart-empty">
+        <div class="empty-icon">🛒</div>
+        <p>Tu carrito está vacío.<br>Agrega productos para continuar.</p>
+      </div>`;
+    sendBtn.disabled = true;
+    totalAmount.textContent = '$0.00';
+    return;
+  }
+
+  let total = 0;
+  drawerItems.innerHTML = items.map(([id, qty]) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return '';
+    total += p.price * qty;
+    return `
+    <div class="cart-item">
+      <div class="ci-icon">${p.icon}</div>
+      <div class="ci-info">
+        <div class="ci-name">${p.name}</div>
+        <div class="ci-price">$${p.price.toFixed(2)} × ${qty} = <strong>$${(p.price*qty).toFixed(2)}</strong></div>
+      </div>
+      <div class="ci-controls">
+        <button class="qty-btn" onclick="changeCartQty('${id}',-1)">−</button>
+        <span class="qty-num">${qty}</span>
+        <button class="qty-btn" onclick="changeCartQty('${id}',1)">+</button>
+        <button class="ci-remove" onclick="removeFromCart('${id}')" title="Quitar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  totalAmount.textContent = '$' + total.toFixed(2);
+  sendBtn.disabled = false;
+}
+
+function toggleCart() {
+  const overlay = document.getElementById('overlay');
+  const drawer = document.getElementById('drawer');
+  const isOpen = drawer.classList.contains('open');
+  overlay.classList.toggle('open', !isOpen);
+  drawer.classList.toggle('open', !isOpen);
+}
+
+// ═══════════════════════════
+//  ENVIAR POR WHATSAPP
+// ═══════════════════════════
+function sendToWhatsApp() {
+  const items = Object.entries(cart);
+  if (!items.length) return;
+
+  const nombre = document.getElementById('customerName').value.trim() || 'Cliente';
+  let total = 0;
+
+  let msg = `🚬 *NUEVO PEDIDO — El Humo Fino*\n`;
+  msg += `👤 ${nombre}\n`;
+  msg += `📅 ${new Date().toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'})}\n\n`;
+  msg += `*PRODUCTOS:*\n`;
+
+  items.forEach(([id, qty]) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const subtotal = p.price * qty;
+    total += subtotal;
+    msg += `• ${p.name} × ${qty} = $${subtotal.toFixed(2)}\n`;
+  });
+
+  msg += `\n💰 *TOTAL: $${total.toFixed(2)}*\n`;
+  msg += `\n_Pedido generado desde El Humo Fino_`;
+
+  const phone = '523141064340';
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+// Init
+loadCatalog();
+</script>
+</body>
+</html>

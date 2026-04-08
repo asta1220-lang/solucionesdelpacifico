@@ -1,0 +1,15 @@
+# Catálogo El Humo Fino
+# Formato: id|nombre|precio|stock|categoria|descripcion|imagen|icono
+# Edita este archivo para actualizar el catálogo en la tienda
+# Las imágenes deben estar en la misma carpeta que los archivos HTML
+
+marlboro-red|Marlboro Red|85|50|americanos|El clásico de todos los tiempos. Sabor intenso y humo denso.||🔴
+marlboro-gold|Marlboro Gold|85|30|light|Suave y equilibrado. La elección premium de muchos fumadores.||🟡
+camel|Camel Filters|80|40|americanos|Mezcla turca y doméstica. Sabor único e inconfundible.||🐪
+winston|Winston Red|75|25|americanos|Sin aditivos, sabor puro de tabaco natural americano.||🚬
+delicados|Delicados|35|60|nacionales|El cigarro nacional más vendido de México. Sabor auténtico.||🇲🇽
+faros|Faros|30|80|nacionales|Tradición mexicana en cada fumada. El preferido del pueblo.||🏮
+marlboro-menthol|Marlboro Mentol|87|20|mentol|Fresco y suave. La sensación mentolada más buscada.||🍃
+camel-menthol|Camel Mentol|82|0|mentol|Frescura camel con el toque inconfundible de la marca.||💚
+benson|Benson & Hedges|95|15|light|La elegancia británica en un cigarro dorado.||✨
+montana|Monterrey|45|35|nacionales|Sabor mexicano del noreste. Robusto y económico.||⛰️
