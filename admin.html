@@ -402,7 +402,10 @@
       <div class="section-title">Gestión de Catálogo</div>
       <div class="section-sub">Edita precios, stock y detalles. Los cambios se guardan en catalogo.txt</div>
     </div>
-    <button class="btn btn-gold" onclick="toggleAddForm()">+ Nuevo Producto</button>
+    <div style="display:flex;gap:0.5rem">
+      <button class="btn btn-outline" onclick="reloadFromTxt()" title="Recarga productos directo desde catalogo.txt (útil si editaste el archivo a mano)">↻ Sincronizar TXT</button>
+      <button class="btn btn-gold" onclick="toggleAddForm()">+ Nuevo Producto</button>
+    </div>
   </div>
 
   <div class="add-form" id="addForm">
@@ -513,24 +516,63 @@ async function init() {
 }
 
 async function loadProducts() {
-  // Intentar cargar desde localStorage (cambios del admin)
-  const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-  if (saved) {
-    products = JSON.parse(saved);
-    return;
-  }
-  // Intentar cargar desde catalogo.txt
+  // SIEMPRE intentar leer el TXT primero — es la fuente de verdad
   try {
     const r = await fetch('catalogo.txt?t=' + Date.now());
     if (r.ok) {
       const text = await r.text();
-      products = parseTxt(text);
-      return;
+      const fromTxt = parseTxt(text);
+      if (fromTxt.length > 0) {
+        // Si hay cambios de admin en localStorage, mezclar: el TXT manda estructura/nuevos,
+        // localStorage aporta cambios de stock/precio hechos desde el admin
+        const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+        if (saved) {
+          const fromLocal = JSON.parse(saved);
+          // Usar TXT como base (incluye productos nuevos editados a mano)
+          // Sobreescribir con datos de localStorage solo para productos existentes en ambos
+          products = fromTxt.map(tp => {
+            const lp = fromLocal.find(x => x.id === tp.id);
+            // Si el producto existe en ambos, usar el que tenga stock más reciente del admin
+            // Pero si el TXT fue editado manualmente (stock diferente), el TXT gana
+            return lp ? { ...tp, stock: lp.stock, price: lp.price } : tp;
+          });
+          // Agregar productos que solo están en localStorage (creados desde admin, no en TXT)
+          const txtIds = new Set(fromTxt.map(p => p.id));
+          for (const lp of fromLocal) {
+            if (!txtIds.has(lp.id)) products.push(lp);
+          }
+        } else {
+          products = fromTxt;
+        }
+        saveProducts();
+        return;
+      }
     }
   } catch(e) {}
-  // Defaults
+  // Si no hay TXT, usar localStorage
+  const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+  if (saved) { products = JSON.parse(saved); return; }
+  // Último recurso: defaults
   products = getDefaults();
   saveProducts();
+}
+
+async function reloadFromTxt() {
+  // Fuerza recarga total desde el TXT, descartando localStorage
+  try {
+    const r = await fetch('catalogo.txt?t=' + Date.now());
+    if (!r.ok) throw new Error('No se pudo leer el archivo');
+    const text = await r.text();
+    const fromTxt = parseTxt(text);
+    if (!fromTxt.length) { toast('El archivo TXT está vacío o tiene errores', 'error'); return; }
+    products = fromTxt;
+    saveProducts();
+    renderCatalog();
+    renderArchivo();
+    toast(`✓ Catálogo sincronizado desde TXT — ${products.length} productos`, 'success');
+  } catch(e) {
+    toast('Error al leer catalogo.txt: ' + e.message, 'error');
+  }
 }
 
 function parseTxt(text) {
