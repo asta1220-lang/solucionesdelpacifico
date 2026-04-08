@@ -509,71 +509,74 @@ const STORAGE_KEY_PEDIDOS = 'humo_pedidos';
 //  INIT
 // ═══════════════════════════════════════
 async function init() {
-  await loadProducts();
+  // Siempre intentar leer TXT al arrancar para tener la versión más fresca
+  await syncFromTxt(false);
   loadPedidos();
   renderCatalog();
   renderArchivo();
 }
 
-async function loadProducts() {
-  // SIEMPRE intentar leer el TXT primero — es la fuente de verdad
-  try {
-    const r = await fetch('catalogo.txt?t=' + Date.now());
-    if (r.ok) {
-      const text = await r.text();
-      const fromTxt = parseTxt(text);
-      if (fromTxt.length > 0) {
-        // Si hay cambios de admin en localStorage, mezclar: el TXT manda estructura/nuevos,
-        // localStorage aporta cambios de stock/precio hechos desde el admin
-        const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-        if (saved) {
-          const fromLocal = JSON.parse(saved);
-          // Usar TXT como base (incluye productos nuevos editados a mano)
-          // Sobreescribir con datos de localStorage solo para productos existentes en ambos
-          products = fromTxt.map(tp => {
-            const lp = fromLocal.find(x => x.id === tp.id);
-            // Si el producto existe en ambos, usar el que tenga stock más reciente del admin
-            // Pero si el TXT fue editado manualmente (stock diferente), el TXT gana
-            return lp ? { ...tp, stock: lp.stock, price: lp.price } : tp;
-          });
-          // Agregar productos que solo están en localStorage (creados desde admin, no en TXT)
-          const txtIds = new Set(fromTxt.map(p => p.id));
-          for (const lp of fromLocal) {
-            if (!txtIds.has(lp.id)) products.push(lp);
-          }
-        } else {
-          products = fromTxt;
-        }
-        saveProducts();
-        return;
-      }
-    }
-  } catch(e) {}
-  // Si no hay TXT, usar localStorage
-  const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-  if (saved) { products = JSON.parse(saved); return; }
-  // Último recurso: defaults
-  products = getDefaults();
-  saveProducts();
-}
+// ─── Fuente de verdad: catalogo.txt ───────────────────────────────────────────
+// El TXT manda siempre. localStorage solo guarda cambios de stock/precio hechos
+// DESDE el admin (no desde edición manual del TXT).
+// Al arrancar y al sincronizar, el TXT gana en estructura; localStorage aporta
+// solo el stock/precio de productos que ya existan en el TXT.
 
-async function reloadFromTxt() {
-  // Fuerza recarga total desde el TXT, descartando localStorage
+async function syncFromTxt(showToast = true) {
   try {
     const r = await fetch('catalogo.txt?t=' + Date.now());
-    if (!r.ok) throw new Error('No se pudo leer el archivo');
+    if (!r.ok) throw new Error('No se pudo leer catalogo.txt');
     const text = await r.text();
     const fromTxt = parseTxt(text);
-    if (!fromTxt.length) { toast('El archivo TXT está vacío o tiene errores', 'error'); return; }
-    products = fromTxt;
-    saveProducts();
-    renderCatalog();
-    renderArchivo();
-    toast(`✓ Catálogo sincronizado desde TXT — ${products.length} productos`, 'success');
+    if (!fromTxt.length) throw new Error('El archivo está vacío o tiene errores de formato');
+
+    // Leer cambios de stock/precio guardados desde el admin
+    const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    const fromLocal = saved ? JSON.parse(saved) : [];
+    const localMap = {};
+    for (const lp of fromLocal) localMap[lp.id] = lp;
+
+    // El TXT define qué productos existen y sus datos base.
+    // Si un producto también está en localStorage, usar su stock y precio
+    // (porque el admin los pudo haber modificado después de la última edición del TXT).
+    // PERO si el TXT tiene un stock diferente al de localStorage, el TXT gana
+    // (asumimos que si alguien editó el TXT a mano, sabe lo que hace).
+    products = fromTxt.map(tp => {
+      const lp = localMap[tp.id];
+      if (!lp) return tp; // producto nuevo en TXT, no estaba en admin → usar TXT completo
+      // Si el stock en TXT cambió vs localStorage, el TXT gana
+      const stockChanged = tp.stock !== lp.stock;
+      return {
+        ...tp,
+        stock: stockChanged ? tp.stock : lp.stock,
+        price: lp.price !== tp.price ? lp.price : tp.price
+      };
+    });
+
+    // Productos creados desde el admin que aún no están en el TXT
+    for (const lp of fromLocal) {
+      if (!products.find(p => p.id === lp.id)) products.push(lp);
+    }
+
+    // Persistir el estado unificado
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    if (showToast) {
+      renderCatalog();
+      renderArchivo();
+      toast(`✓ Sincronizado desde TXT — ${products.length} productos`, 'success');
+    }
   } catch(e) {
-    toast('Error al leer catalogo.txt: ' + e.message, 'error');
+    // Sin TXT: usar localStorage o defaults
+    const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    products = saved ? JSON.parse(saved) : getDefaults();
+    if (!saved) localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    if (showToast) toast('No se pudo leer catalogo.txt: ' + e.message, 'error');
   }
 }
+
+async function loadProducts() { await syncFromTxt(false); }
+
+async function reloadFromTxt() { await syncFromTxt(true); }
 
 function parseTxt(text) {
   const lines = text.split('\n').filter(l => l.trim() && !l.startsWith('#'));
@@ -842,10 +845,23 @@ function updateField(i, field, val) {
 }
 
 function saveOne(i) {
+  // Leer valores actuales del DOM para este card
+  const p = products[i];
+  if (!p) return;
+  const priceEl = document.getElementById('price-' + i);
+  const stockEl = document.getElementById('stock-' + i);
+  const descEl  = document.getElementById('desc-' + i);
+  const imgEl   = document.getElementById('img-' + i);
+  const iconEl  = document.getElementById('icon-' + i);
+  if (priceEl) p.price  = parseFloat(priceEl.value)  || p.price;
+  if (stockEl) p.stock  = parseInt(stockEl.value)    || 0;
+  if (descEl)  p.desc   = descEl.value.trim()        || p.desc;
+  if (imgEl)   p.img    = imgEl.value.trim();
+  if (iconEl)  p.icon   = iconEl.value.trim()        || p.icon;
   saveProducts();
   renderCatalog();
   renderArchivo();
-  toast('✓ Guardado: ' + products[i].name, 'success');
+  toast('✓ Guardado: ' + p.name, 'success');
 }
 
 function deleteProduct(i) {
