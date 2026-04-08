@@ -509,13 +509,22 @@ let cart = {};
 let currentFilter = 'todos';
 
 async function loadCatalog() {
+  // 1. Primero intentar localStorage (cambiado desde admin — siempre más fresco)
+  const saved = localStorage.getItem('humo_products');
+  if (saved) {
+    try {
+      products = JSON.parse(saved);
+      renderCatalog();
+      return;
+    } catch(e) {}
+  }
+  // 2. Si no hay localStorage, leer el TXT
   try {
     const resp = await fetch('catalogo.txt?t=' + Date.now());
     if (!resp.ok) throw new Error('no txt');
     const text = await resp.text();
     products = parseCatalog(text);
   } catch (e) {
-    // Datos de ejemplo si no hay archivo
     products = getDefaultProducts();
   }
   renderCatalog();
