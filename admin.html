@@ -403,7 +403,7 @@
       <div class="section-sub">Edita precios, stock y detalles. Los cambios se guardan en catalogo.txt</div>
     </div>
     <div style="display:flex;gap:0.5rem">
-      <button class="btn btn-outline" onclick="reloadFromTxt()" title="Recarga productos directo desde catalogo.txt (útil si editaste el archivo a mano)">↻ Sincronizar TXT</button>
+      <button class="btn btn-outline" onclick="reloadFromTxt()" title="Importa productos del TXT. NUNCA borra los creados desde el admin.">↻ Importar TXT</button>
       <button class="btn btn-gold" onclick="toggleAddForm()">+ Nuevo Producto</button>
     </div>
   </div>
@@ -509,74 +509,72 @@ const STORAGE_KEY_PEDIDOS = 'humo_pedidos';
 //  INIT
 // ═══════════════════════════════════════
 async function init() {
-  // Siempre intentar leer TXT al arrancar para tener la versión más fresca
-  await syncFromTxt(false);
+  await loadProducts();
   loadPedidos();
   renderCatalog();
   renderArchivo();
 }
 
-// ─── Fuente de verdad: catalogo.txt ───────────────────────────────────────────
-// El TXT manda siempre. localStorage solo guarda cambios de stock/precio hechos
-// DESDE el admin (no desde edición manual del TXT).
-// Al arrancar y al sincronizar, el TXT gana en estructura; localStorage aporta
-// solo el stock/precio de productos que ya existan en el TXT.
+// ─── Base de datos: localStorage ─────────────────────────────────────────────
+// localStorage es la fuente de verdad en el admin.
+// "Importar TXT" agrega/actualiza pero NUNCA borra productos del admin.
+// "Descargar TXT" exporta todo lo que hay al archivo.
 
-async function syncFromTxt(showToast = true) {
+async function loadProducts() {
+  const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+  if (saved) {
+    products = JSON.parse(saved);
+    return;
+  }
+  // Primera vez sin localStorage: intentar cargar desde TXT
+  try {
+    const r = await fetch('catalogo.txt?t=' + Date.now());
+    if (r.ok) {
+      const text = await r.text();
+      const fromTxt = parseTxt(text);
+      if (fromTxt.length) { products = fromTxt; saveProducts(); return; }
+    }
+  } catch(e) {}
+  products = getDefaults();
+  saveProducts();
+}
+
+async function reloadFromTxt() {
+  // Importa TXT: agrega productos nuevos, actualiza existentes,
+  // pero NUNCA borra los creados desde el admin.
   try {
     const r = await fetch('catalogo.txt?t=' + Date.now());
     if (!r.ok) throw new Error('No se pudo leer catalogo.txt');
     const text = await r.text();
     const fromTxt = parseTxt(text);
-    if (!fromTxt.length) throw new Error('El archivo está vacío o tiene errores de formato');
+    if (!fromTxt.length) { toast('El TXT está vacío o tiene errores', 'error'); return; }
 
-    // Leer cambios de stock/precio guardados desde el admin
-    const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-    const fromLocal = saved ? JSON.parse(saved) : [];
-    const localMap = {};
-    for (const lp of fromLocal) localMap[lp.id] = lp;
-
-    // El TXT define qué productos existen y sus datos base.
-    // Si un producto también está en localStorage, usar su stock y precio
-    // (porque el admin los pudo haber modificado después de la última edición del TXT).
-    // PERO si el TXT tiene un stock diferente al de localStorage, el TXT gana
-    // (asumimos que si alguien editó el TXT a mano, sabe lo que hace).
-    products = fromTxt.map(tp => {
-      const lp = localMap[tp.id];
-      if (!lp) return tp; // producto nuevo en TXT, no estaba en admin → usar TXT completo
-      // Si el stock en TXT cambió vs localStorage, el TXT gana
-      const stockChanged = tp.stock !== lp.stock;
-      return {
-        ...tp,
-        stock: stockChanged ? tp.stock : lp.stock,
-        price: lp.price !== tp.price ? lp.price : tp.price
-      };
-    });
-
-    // Productos creados desde el admin que aún no están en el TXT
-    for (const lp of fromLocal) {
-      if (!products.find(p => p.id === lp.id)) products.push(lp);
+    let added = 0, updated = 0;
+    for (const tp of fromTxt) {
+      const idx = products.findIndex(p => p.id === tp.id);
+      if (idx === -1) {
+        products.push(tp);
+        added++;
+      } else {
+        // Actualizar nombre/desc/img/icon/cat del TXT,
+        // pero conservar stock y precio que el admin haya cambiado
+        products[idx] = {
+          ...tp,
+          stock: products[idx].stock,
+          price: products[idx].price
+        };
+        updated++;
+      }
     }
 
-    // Persistir el estado unificado
-    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
-    if (showToast) {
-      renderCatalog();
-      renderArchivo();
-      toast(`✓ Sincronizado desde TXT — ${products.length} productos`, 'success');
-    }
+    saveProducts();
+    renderCatalog();
+    renderArchivo();
+    toast('\u2713 TXT importado — ' + added + ' nuevos, ' + updated + ' actualizados, total: ' + products.length, 'success');
   } catch(e) {
-    // Sin TXT: usar localStorage o defaults
-    const saved = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-    products = saved ? JSON.parse(saved) : getDefaults();
-    if (!saved) localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
-    if (showToast) toast('No se pudo leer catalogo.txt: ' + e.message, 'error');
+    toast('Error: ' + e.message, 'error');
   }
 }
-
-async function loadProducts() { await syncFromTxt(false); }
-
-async function reloadFromTxt() { await syncFromTxt(true); }
 
 function parseTxt(text) {
   const lines = text.split('\n').filter(l => l.trim() && !l.startsWith('#'));
